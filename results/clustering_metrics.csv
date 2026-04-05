@@ -1,0 +1,4 @@
+method,silhouette_score,calinski_harabasz_index,davies_bouldin_index,adjusted_rand_index,normalized_mutual_info,cluster_purity
+VAE + K-Means,0.4285750389099121,69332.77788838862,0.6362771387820562,,,
+PCA + K-Means,0.10508918017148972,1588.664739866466,2.1846960255603944,,,
+Raw Features + K-Means,0.09738590568304062,1462.8943391353987,2.2747489170085338,,,

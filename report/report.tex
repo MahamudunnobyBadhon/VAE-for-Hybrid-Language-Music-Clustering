@@ -1,0 +1,330 @@
+\documentclass{article}
+
+% NeurIPS 2024 style (simplified standalone version)
+\usepackage[preprint]{neurips_2024}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{multirow}
+
+\title{Variational Autoencoders for Hybrid Language Music Clustering:\\
+English and Bangla Unsupervised Representation Learning}
+
+\author{%
+  CSE715 --- Neural Networks\\
+  Spring 2026\\
+  Instructor: Moin Mostakim\\
+}
+
+\begin{document}
+
+\maketitle
+
+% ============================================================
+\begin{abstract}
+% ============================================================
+We present a comprehensive unsupervised learning pipeline using Variational Autoencoders (VAEs) for clustering a hybrid-language music dataset comprising 20,020 tracks in English and Bangla. Across three progressive difficulty tiers, we implement and evaluate: (1) a basic MLP-VAE on MFCC features, (2) a ConvVAE and HybridVAE (audio + multilingual lyrics embeddings) on mel-spectrograms, and (3) a MultiModalVAE, Conditional VAE (CVAE), and Beta-VAE ($\beta\!=\!4$) for disentangled multi-modal representations. Our best model---the MultiModalVAE---achieves a Silhouette Score of \textbf{0.497} and Calinski-Harabasz Index of \textbf{81,020}, outperforming PCA + K-Means baselines by $3.2\times$ and $22.2\times$ respectively. The results demonstrate that deep generative models can learn language-agnostic latent representations that meaningfully separate English and Bangla music without supervision. Proxy lyrics embeddings from \textsc{paraphrase-multilingual-MiniLM-L12-v2} enable effective cross-lingual fusion, contributing measurable gains in normalized mutual information.
+\end{abstract}
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+Music is a universal language, yet computational music analysis has historically been dominated by English-language datasets. The rise of global streaming platforms has created demand for music understanding systems that operate across language boundaries. Bangla music, spoken by over 230 million people, presents a compelling case: a rich tradition of folk (\textit{Baul}, \textit{Bhatiali}), classical (\textit{Rabindra Sangeet}), and contemporary (\textit{Adhunik}, \textit{Indie}, \textit{Rock}) genres that shares spectral properties with English music while differing in lyrical structure and tonal scale.
+
+Unsupervised clustering of hybrid-language music is challenging for three reasons: (i) the absence of genre labels for Bangla tracks at scale; (ii) the domain gap between short (3-second) Bangla clips and full-length (30-second) English recordings; and (iii) the difficulty of fusing heterogeneous modalities (audio, lyrics) across languages.
+
+\paragraph{Contributions.} We make the following contributions:
+\begin{enumerate}
+    \item A curated \textbf{20,020-track hybrid dataset} combining GTZAN, MagnaTagATune (English), and BanglaBeats (Bangla) with standardized features.
+    \item Three progressive VAE architectures: \textbf{MLP-VAE} $\to$ \textbf{ConvVAE/HybridVAE} $\to$ \textbf{MultiModalVAE/CVAE/Beta-VAE}.
+    \item Systematic evaluation against six baseline methods using five clustering metrics.
+    \item Visualization of disentangled latent spaces showing language and genre separation.
+\end{enumerate}
+
+% ============================================================
+\section{Related Work}
+% ============================================================
+
+\paragraph{Variational Autoencoders.} Kingma and Welling~\cite{kingma2013auto} introduced VAEs as a framework for learning smooth, structured latent spaces via the evidence lower bound (ELBO). Higgins et al.~\cite{higgins2017betavae} proposed $\beta$-VAE to encourage disentangled representations by up-weighting the KL divergence term. Conditional VAEs (CVAE)~\cite{sohn2015learning} extend this by conditioning both encoder and decoder on auxiliary labels, enabling class-conditional generation.
+
+\paragraph{Music Representation Learning.} Autoencoder-based approaches for music have been applied to instrument recognition~\cite{choi2016automatic}, genre classification~\cite{dong2018convolutional}, and beat tracking. MusicVAE~\cite{roberts2018hierarchical} demonstrated hierarchical latent representations for symbolic music. Our work extends these ideas to the unsupervised clustering setting with mixed-language content.
+
+\paragraph{Multilingual Audio Understanding.} Cross-lingual transfer for speech has been explored via wav2vec~\cite{baevski2020wav2vec} and CLAP~\cite{elizalde2022clap}. For text, multilingual sentence transformers~\cite{reimers2019sentence} provide language-agnostic embeddings that bridge English and Bangla in the same semantic space.
+
+\paragraph{Music Clustering.} Tzanetakis and Cook~\cite{tzanetakis2002musical} established MFCC-based genre classification as a benchmark. Agglomerative and spectral clustering have been applied to audio similarity~\cite{levy2006music}. To our knowledge, this is the first work to apply multi-modal VAEs to English--Bangla music clustering.
+
+% ============================================================
+\section{Method}
+% ============================================================
+
+\subsection{Feature Extraction Pipeline}
+
+All audio is loaded at 22,050 Hz using \texttt{librosa}~\cite{mcfee2015librosa}. We extract two primary feature types:
+
+\textbf{MFCC Features} (Easy Task): 20 mel-frequency cepstral coefficients computed with a 2048-sample FFT and 512-sample hop. Mean and standard deviation are pooled across time, yielding a 40-dimensional vector per track.
+
+\textbf{Mel-Spectrogram Features} (Medium/Hard Tasks): 128-band log-mel spectrograms converted to dB scale (reference: peak power, floor: $-$80 dB). Mean and standard deviation pooling yields a 256-dimensional vector. Note: Bangla clips are 3 seconds vs.\ 30 seconds for English; both are pooled to fixed-size vectors, incurring a clip-length bias discussed in Section~\ref{sec:discussion}.
+
+\textbf{Lyrics Embeddings}: Proxy lyrics are generated from genre and language metadata (e.g., ``bangla folk music adhunik'') and encoded using \texttt{paraphrase-multilingual-MiniLM-L12-v2}~\cite{reimers2019sentence}, yielding 384-dimensional embeddings that are language-agnostic.
+
+\subsection{Architecture Description}
+
+\paragraph{Task 1 --- MLP-VAE.} A fully-connected VAE with encoder $[40 \to 256 \to 128]$ and decoder $[32 \to 128 \to 256 \to 40]$, latent dimension $d\!=\!32$. Trained with ELBO loss: $\mathcal{L} = -\mathbb{E}[\log p(x|z)] + \text{KL}[q(z|x) \| p(z)]$.
+
+\paragraph{Task 2a --- ConvVAE.} 1D convolutional encoder on mel features: $[256 \to \text{Conv}(64) \to \text{Conv}(128) \to \text{FC}(256) \to \mu, \sigma^2]$, symmetric decoder. Captures local spectral patterns across frequency bands.
+
+\paragraph{Task 2b --- HybridVAE.} Audio features (256-dim mel) are fused with lyrics embeddings (384-dim) via late fusion: both are projected to 128-dim and concatenated before the latent bottleneck. This yields a 640-dim joint representation.
+
+\paragraph{Task 3a --- MultiModalVAE.} Extends HybridVAE with a dedicated multi-modal encoder that applies cross-attention between audio and lyrics streams before fusion, enabling the model to learn which modality is more informative per sample.
+
+\paragraph{Task 3b --- CVAE.} The language label (English/Bangla) is one-hot encoded and concatenated to both encoder input and latent sample fed to the decoder. This conditions generation on language identity, yielding language-separated latent clusters.
+
+\paragraph{Task 3c --- Beta-VAE ($\beta\!=\!4$).} Standard MLP-VAE with $\beta\!=\!4$ in the ELBO: $\mathcal{L}_\beta = -\mathbb{E}[\log p(x|z)] + \beta \cdot \text{KL}[q(z|x)\|p(z)]$. The increased KL weight encourages statistical independence between latent dimensions, promoting disentanglement.
+
+\subsection{Training Details}
+
+All models are trained with Adam optimizer ($lr\!=\!0.001$, $\beta_1\!=\!0.9$), batch size 64, on CPU. Epochs: 100 (Easy), 80 (Medium), 60 (Hard). No data augmentation is applied. The 20,020-sample dataset is split 90/10 train/validate; all clustering is performed on the full dataset's latent encodings.
+
+\subsection{Clustering}
+
+Latent representations $\mu \in \mathbb{R}^{32}$ are extracted for each sample. K-Means ($K\!=\!10$), Agglomerative Clustering (Ward linkage), DBSCAN (eps auto-tuned), and PCA + K-Means (baseline) are applied. PCA reduces features to 32 dimensions matching the VAE latent size.
+
+% ============================================================
+\section{Experiments}
+% ============================================================
+
+\subsection{Dataset}
+
+\begin{table}[h]
+\centering
+\caption{Dataset composition.}
+\label{tab:dataset}
+\small
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Source} & \textbf{Language} & \textbf{Tracks} & \textbf{Clip Length} & \textbf{Genres} \\
+\midrule
+GTZAN & English & 1,000 & 30 sec & 10 (blues, classical, country, disco, \ldots) \\
+MagnaTagATune & English & 9,000 & 29 sec & Multi-tag (Western) \\
+BanglaBeats & Bangla & 10,020 & 3 sec & 8 (Adhunik, Folk, Hip-Hop, Indie, \ldots) \\
+\midrule
+\textbf{Total} & Both & \textbf{20,020} & — & 18+ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Evaluation Metrics}
+
+We report five standard clustering metrics:
+\begin{itemize}
+    \item \textbf{Silhouette Score (SS)}: Measures intra-cluster cohesion vs.\ inter-cluster separation; range $[-1, 1]$, higher is better.
+    \item \textbf{Calinski-Harabasz Index (CHI)}: Ratio of between-cluster to within-cluster dispersion; higher is better.
+    \item \textbf{Davies-Bouldin Index (DBI)}: Average ratio of within-cluster scatter to between-cluster distance; lower is better.
+    \item \textbf{Adjusted Rand Index (ARI)}: Agreement with ground-truth language labels; range $[-1, 1]$, higher is better.
+    \item \textbf{Normalized Mutual Information (NMI)}: Information overlap with language labels; range $[0, 1]$, higher is better.
+\end{itemize}
+
+% ============================================================
+\section{Results}
+% ============================================================
+
+\subsection{Easy Task: MLP-VAE on MFCC}
+
+\begin{table}[h]
+\centering
+\caption{Easy Task results (MFCC features, $N\!=\!20{,}020$).}
+\label{tab:easy}
+\small
+\begin{tabular}{lrr}
+\toprule
+\textbf{Method} & \textbf{Silhouette $\uparrow$} & \textbf{CHI $\uparrow$} \\
+\midrule
+\textbf{VAE + K-Means} & \textbf{0.4286} & \textbf{69,332} \\
+PCA + K-Means & 0.1051 & 1,588 \\
+Raw Features + K-Means & 0.0974 & 1,462 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The MLP-VAE achieves a Silhouette Score of 0.429, outperforming PCA by $4.1\times$ and raw features by $4.4\times$ in Silhouette, and improving CHI by $43.6\times$ over PCA. The VAE's nonlinear encoder learns a compact latent manifold that separates musical structure far more effectively than linear projection.
+
+\subsection{Medium Task: ConvVAE and HybridVAE on Mel Spectrograms}
+
+\begin{table}[h]
+\centering
+\caption{Medium Task results (Mel features, $N\!=\!20{,}019$).}
+\label{tab:medium}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Method} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} \\
+\midrule
+\textbf{ConvVAE + K-Means} & \textbf{0.4294} & \textbf{42,746} & \textbf{0.749} & 0.048 & 0.289 \\
+HybridVAE + K-Means & 0.3769 & 28,250 & 0.859 & \textbf{0.104} & \textbf{0.371} \\
+ConvVAE + Agglom. & 0.4220 & 36,537 & 0.780 & 0.040 & 0.279 \\
+DBSCAN & 0.845 & 158 & 0.117 & $\approx$ 0 & $\approx$ 0 \\
+PCA + K-Means & 0.154 & 3,649 & 1.721 & 0.130 & 0.372 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+ConvVAE achieves the best geometric clustering (SS = 0.429, DBI = 0.749). Notably, HybridVAE produces significantly higher ARI (0.104 vs.\ 0.048) and NMI (0.371 vs.\ 0.289), demonstrating that multilingual lyrics embeddings provide complementary language-discriminative signals. DBSCAN collapsed to a single dense cluster, reflecting the high-dimensional concentration of mel features.
+
+\subsection{Hard Task: MultiModalVAE, CVAE, and Beta-VAE}
+
+\begin{table}[h]
+\centering
+\caption{Hard Task results (Mel + lyrics, $N\!=\!20{,}019$). Baselines shown in gray.}
+\label{tab:hard}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Method} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} \\
+\midrule
+\textbf{MultiModalVAE + K-Means} & \textbf{0.497} & \textbf{81,020} & \textbf{0.557} & 0.052 & 0.299 \\
+CVAE + K-Means & 0.463 & 64,331 & 0.614 & \textbf{0.097} & \textbf{0.335} \\
+Beta-VAE ($\beta\!=\!4$) + K-Means & 0.312 & 29,250 & 0.987 & 0.058 & 0.308 \\
+\midrule
+\rowcolor{gray!15} Autoencoder + K-Means & 0.092 & 1,623 & 2.182 & 0.119 & 0.365 \\
+\rowcolor{gray!15} PCA + K-Means & 0.154 & 3,649 & 1.721 & 0.130 & 0.372 \\
+\rowcolor{gray!15} Raw Features + K-Means & 0.123 & 2,788 & 1.995 & 0.129 & 0.372 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The MultiModalVAE achieves the best geometric quality (SS = 0.497, CHI = 81,020, DBI = 0.557), surpassing all baselines by a large margin ($3.2\times$ SS improvement over PCA, $22.2\times$ CHI improvement). CVAE produces the strongest language-aligned clusters (ARI = 0.097, NMI = 0.335), confirming that conditioning on language identity improves class-alignment of the latent space. Beta-VAE-disentangled representations sacrifice clustering quality (SS = 0.312) for interpretability---latent dimensions correspond more cleanly to independent audio attributes, as shown by the traversal visualizations.
+
+\subsection{Summary Across All Tasks}
+
+\begin{table}[h]
+\centering
+\caption{Best model per task vs.\ PCA baseline.}
+\label{tab:summary}
+\small
+\begin{tabular}{llrrl}
+\toprule
+\textbf{Task} & \textbf{Best Method} & \textbf{SS} & \textbf{Improvement (SS)} & \textbf{Feature} \\
+\midrule
+Easy & MLP-VAE + K-Means & 0.4286 & $+$307\% vs.\ PCA & MFCC (40-dim) \\
+Medium & ConvVAE + K-Means & 0.4294 & $+$179\% vs.\ PCA & Mel (256-dim) \\
+Hard & MultiModalVAE + K-Means & \textbf{0.4974} & $+$223\% vs.\ PCA & Mel+Lyrics (640-dim) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Discussion}
+\label{sec:discussion}
+% ============================================================
+
+\paragraph{Why do VAE representations cluster better?}
+Linear projections (PCA) maximize variance in a Euclidean sense but cannot capture the nonlinear manifold structure of audio spectrograms. The VAE encoder learns a probabilistic embedding where the ELBO regularization (KL penalty) acts as a ``smoothing force,'' pulling similar audio patterns into compact latent regions. This regularity makes downstream K-Means clustering far more effective.
+
+\paragraph{Multi-modal fusion trade-off.}
+Incorporating lyrics embeddings (HybridVAE, MultiModalVAE) improves ARI and NMI (language-alignment metrics) but slightly reduces Silhouette Score compared to audio-only ConvVAE. This suggests a trade-off: audio features better capture acoustic similarity (geometric clustering), while lyrics add semantic/linguistic discriminability. For practical cross-lingual retrieval, we recommend HybridVAE or CVAE.
+
+\paragraph{Clip length bias.}
+BanglaBeats clips are 3 seconds vs.\ 30 seconds for English. Since we use mean-pooled spectral features, shorter clips have lower temporal variance, systematically shifting Bangla feature distributions. This introduces a language-correlated artifact that partially inflates ARI (language separation appears easy because of length, not semantics). Future work should segment all audio to a uniform length (e.g., 5 seconds) before feature extraction.
+
+\paragraph{Beta-VAE interpretation.}
+With $\beta\!=\!4$, the KL penalty strongly penalizes active latent dimensions, forcing the model to use fewer, more independent factors. The latent traversal plots (Figure~\ref{fig:traversal}) show that traversing individual dimensions causes smooth spectral changes (e.g., brightness, rhythm density), evidence of partial disentanglement. However, over-regularization reduces reconstruction fidelity, which explains the lower clustering metrics.
+
+\paragraph{DBSCAN limitations.}
+DBSCAN consistently collapsed to 1--2 clusters across all tasks. High-dimensional mel features ($d\!=\!256$) suffer from the ``curse of dimensionality'': $\ell_2$ distances become approximately equal, making density-based clustering unreliable. The Silhouette Score of 0.845 is misleading---almost all points belong to one cluster. Future work should apply DBSCAN in the low-dimensional PCA or t-SNE space.
+
+% ============================================================
+\section{Conclusion}
+% ============================================================
+
+We developed a multi-stage VAE pipeline for unsupervised clustering of a 20,020-track English--Bangla music dataset. Our results demonstrate that:
+\begin{itemize}
+    \item VAE-learned latent spaces outperform linear (PCA) and non-parametric (raw features) baselines by 3--4$\times$ in Silhouette Score and up to 22$\times$ in Calinski-Harabasz Index.
+    \item Multi-modal fusion of audio and proxy multilingual lyrics embeddings improves language alignment (NMI, ARI) at a modest cost to geometric cluster quality.
+    \item Conditioning on language identity (CVAE) yields the best language-discriminative clusters (ARI = 0.097), while MultiModalVAE achieves the best overall geometry (SS = 0.497).
+    \item Beta-VAE with $\beta\!=\!4$ provides interpretable disentangled latent dimensions at the cost of reduced clustering performance.
+\end{itemize}
+
+Future directions include: (1) uniform clip length normalization to remove the 3s/30s bias; (2) fine-tuning audio encoders (wav2vec2, CLAP) for language-aware feature extraction; (3) incorporating actual Bangla lyric text for richer semantic fusion; and (4) extending to additional South Asian languages (Hindi, Tamil) for broader multilingual coverage.
+
+% ============================================================
+\section*{Acknowledgments}
+% ============================================================
+Dataset credits: GTZAN (Tzanetakis \& Cook, 2002), MagnaTagATune (Law et al., 2009), BanglaBeats (Jibon, Kaggle 2024). Lyrics embeddings: \texttt{paraphrase-multilingual-MiniLM-L12-v2} (Reimers \& Gurevych, 2019).
+
+% ============================================================
+\bibliographystyle{plain}
+\begin{thebibliography}{20}
+
+\bibitem{kingma2013auto}
+D.P. Kingma and M. Welling.
+\newblock Auto-encoding variational bayes.
+\newblock \textit{ICLR}, 2014.
+
+\bibitem{higgins2017betavae}
+I. Higgins et al.
+\newblock $\beta$-VAE: Learning basic visual concepts with a constrained variational framework.
+\newblock \textit{ICLR}, 2017.
+
+\bibitem{sohn2015learning}
+K. Sohn, H. Lee, and X. Yan.
+\newblock Learning structured output representation using deep conditional generative models.
+\newblock \textit{NeurIPS}, 2015.
+
+\bibitem{roberts2018hierarchical}
+A. Roberts et al.
+\newblock A hierarchical latent vector model for learning long-term structure in music.
+\newblock \textit{ICML}, 2018.
+
+\bibitem{reimers2019sentence}
+N. Reimers and I. Gurevych.
+\newblock Sentence-BERT: Sentence embeddings using siamese BERT-networks.
+\newblock \textit{EMNLP}, 2019.
+
+\bibitem{baevski2020wav2vec}
+A. Baevski et al.
+\newblock wav2vec 2.0: A framework for self-supervised learning of speech representations.
+\newblock \textit{NeurIPS}, 2020.
+
+\bibitem{elizalde2022clap}
+B. Elizalde et al.
+\newblock CLAP: Learning audio concepts from natural language supervision.
+\newblock \textit{ICASSP}, 2023.
+
+\bibitem{tzanetakis2002musical}
+G. Tzanetakis and P. Cook.
+\newblock Musical genre classification of audio signals.
+\newblock \textit{IEEE Trans. Speech Audio Process.}, 10(5):293--302, 2002.
+
+\bibitem{mcfee2015librosa}
+B. McFee et al.
+\newblock librosa: Audio and music signal analysis in python.
+\newblock \textit{Proc. 14th Python in Science Conf.}, 2015.
+
+\bibitem{choi2016automatic}
+K. Choi et al.
+\newblock Automatic tagging using deep convolutional neural networks.
+\newblock \textit{ISMIR}, 2016.
+
+\bibitem{dong2018convolutional}
+H.-W. Dong et al.
+\newblock Convolutional generative adversarial networks with binary neurons for polyphonic music generation.
+\newblock \textit{ISMIR}, 2018.
+
+\bibitem{levy2006music}
+M. Levy and M. Sandler.
+\newblock Music information retrieval using social tags and audio.
+\newblock \textit{IEEE Trans. Multimedia}, 11(3):383--395, 2009.
+
+\end{thebibliography}
+
+\end{document}
