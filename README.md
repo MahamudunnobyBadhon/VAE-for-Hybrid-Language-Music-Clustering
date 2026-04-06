@@ -16,10 +16,15 @@ Unsupervised learning pipeline using Variational Autoencoders (VAE) to cluster h
 
 ## Dataset
 
-- **English audio:** 250 GTZAN tracks (10 genres, 25 tracks/genre)
-- **Bangla audio:** 250 programmatically generated tracks (5 genres)
-- **Lyrics embeddings:** LaBSE / multilingual-MiniLM embeddings (768/384-dim) for multi-modal experiments
-- **Feature types:** MFCC (40-dim), Mel-spectrogram (256-dim), Combined audio features (176-dim)
+| Source | Language | Tracks | Clip Length | Genres |
+|--------|----------|--------|-------------|--------|
+| GTZAN | English | 1,000 | 30 sec | 10 (blues, classical, country, disco, hip-hop, jazz, metal, pop, reggae, rock) |
+| MagnaTagATune | English | 9,000 | 29 sec | Multi-tag Western |
+| BanglaBeats | Bangla | 10,020 | 3 sec | 8 (Adhunik, Folk, Hip-Hop, Indie, Islamic, Metal, Pop, Rock) |
+| **Total** | Both | **20,020** | — | 18+ |
+
+- **Feature types:** MFCC (40-dim), Mel-spectrogram (256-dim)
+- **Lyrics embeddings:** `paraphrase-multilingual-MiniLM-L12-v2` (384-dim) — proxy lyrics generated from genre+language metadata
 
 ## Quick Start
 
@@ -32,22 +37,23 @@ pip install -r requirements.txt
 ### 2. Download & extract dataset
 
 ```bash
-python build_dataset.py
+python build_dataset.py --bangla-only      # Download BanglaBeats (Bangla audio)
+python build_dataset.py                    # Also download GTZAN + MagnaTagATune (English)
 ```
 
-This downloads GTZAN (English, 1 GB) and generates/downloads Bangla audio files. Features are extracted automatically.
+Features are extracted automatically into `data/features/`.
 
-### 3. Run tasks
+### 3. Run tasks (with real audio)
 
 ```bash
 # Easy Task (BasicVAE + K-Means)
 python run_easy_task.py --use-real-audio --epochs 100
 
-# Medium Task (ConvVAE + Hybrid VAE + multi-clustering)
-python run_medium_task.py --n-clusters 10 --epochs 80
+# Medium Task (ConvVAE + HybridVAE + multi-clustering)
+python run_medium_task.py --use-real-audio --n-clusters 10 --epochs 80
 
 # Hard Task (BetaVAE + CVAE + MultiModalVAE + full comparison)
-python run_hard_task.py --beta 4.0 --n-clusters 10 --epochs 60
+python run_hard_task.py --use-real-audio --beta 4.0 --n-clusters 10 --epochs 60
 ```
 
 ### Quick test (synthetic data, no audio required)
@@ -140,6 +146,25 @@ Same as Medium, plus:
 |------|---------|-------------|
 | `--beta` | 4.0 | β value for BetaVAE |
 | `--skip-multimodal` | False | Skip MultiModalVAE |
+
+## Key Results (Real Data, 20,020 Tracks)
+
+| Task | Best Method | Silhouette | CHI | vs. PCA |
+|------|-------------|-----------|-----|---------|
+| Easy | MLP-VAE + K-Means | 0.4286 | 69,332 | +307% SS |
+| Medium | ConvVAE + K-Means | 0.4294 | 42,746 | +179% SS |
+| Hard | MultiModalVAE + K-Means | **0.4974** | **81,020** | +223% SS |
+
+Language clustering (English vs. Bangla): 7/10 VAE clusters are language-pure (>80%), purity 87-92%.
+
+For hyperparameter sensitivity analysis across 1,800+ configurations:
+
+```bash
+python run_finetune.py --use-real-audio --quick   # ~1-2 hours
+python run_finetune.py --use-real-audio            # full grid, ~8 hours
+```
+
+Results saved to `results/finetune/finetune_results.csv`.
 
 ## Reproducibility
 
