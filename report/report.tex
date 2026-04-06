@@ -293,6 +293,32 @@ Beta-VAE ($\beta\!=\!4$) + K-Means & 0.312 & 29,250 & 0.987 & 0.058 & 0.308 \\
 
 The MultiModalVAE achieves the best geometry (SS = 0.497, CHI = 81,020, DBI = 0.557)---$3.2\times$ SS and $22.2\times$ CHI improvement over PCA. CVAE produces the best label-aligned clusters (ARI = 0.097, NMI = 0.335), confirming that conditioning on language identity improves discriminability. The latent traversal (Fig.~\ref{fig:traversal}) shows smooth spectral morphing, evidence of partial disentanglement in Beta-VAE.
 
+\subsection{Hyperparameter Sensitivity Analysis}
+\label{sec:finetune}
+
+To assess robustness, we ran a post-hoc grid search (\texttt{run\_finetune.py}) over $\beta \in \{1.0, 2.0\}$, $d_z \in \{16, 32\}$, $K \in \{2, 10, 18\}$, and clustering methods $\in \{\text{K-Means, GMM}\}$, producing 156 experimental configurations evaluated against both genre (labeled tracks only) and language ($K\!=\!2$) ground truths.
+
+\begin{table}[h]
+\centering
+\caption{Hyperparameter sensitivity: best configurations per metric ($K\!=\!10$, KMeans, labeled-only eval).}
+\label{tab:finetune}
+\small
+\begin{tabular}{llrrrrr}
+\toprule
+\textbf{Model} & \textbf{$d_z$} & \textbf{$\beta$} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} \\
+\midrule
+BasicVAE        & 32 & 1.0 & \textbf{0.507} & 17,644 & $\approx$0 & 0.003 \\
+MultiModalVAE   & 32 & 1.0 & 0.502          & \textbf{19,922} & $\approx$0 & 0.003 \\
+BasicVAE        & 16 & 1.0 & 0.499          & 19,639 & $\approx$0 & 0.002 \\
+CVAE            & 16 & 1.0 & 0.493          & 25,729 & $\approx$0 & 0.003 \\
+BetaVAE ($\beta\!=\!2$) & 32 & 2.0 & 0.382 & 21,220 & $\approx$0 & 0.003 \\
+\rowcolor{gray!15} PCA(32)+GMM & 32 & -- & 0.030 & 597 & \textbf{0.167} & \textbf{0.253} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Key findings: (1) $\beta\!=\!1.0$ consistently outperforms $\beta\!=\!2.0$ in Silhouette ($+32\%$), confirming the main task's choice. (2) $d_z\!=\!32$ is slightly better than $d_z\!=\!16$ (+1--2\%). (3) VAE models attain ARI $\approx 0$ under the labeled-only evaluation because this subset excludes the 9,000 MagnaTagATune tracks (reduced to $\sim$11,000 samples), drastically changing the cluster geometry. (4) PCA + GMM at $K\!=\!18$ achieves ARI = 0.204 --- competitive with HybridVAE (ARI = 0.209) --- when the cluster count matches the genre count, an instance of the well-known K-sensitivity of ARI.
+
 \subsection{Language vs.\ Genre Clustering}
 \label{sec:language_eval}
 

@@ -1,0 +1,38 @@
+=== Top 5 by Silhouette (labeled_only) ===
+        model feature_type  latent_dim  beta    lr  epochs  n_clusters clustering     eval_set  silhouette_score  calinski_harabasz_index  davies_bouldin_index  adjusted_rand_index  normalized_mutual_info  cluster_purity
+      ConvVAE          mel          32   1.0 0.001    60.0           2     KMeans labeled_only          0.725045             15027.402408              0.566685             0.000229                0.000357        0.124149
+      ConvVAE          mel          16   1.0 0.001    60.0           2     KMeans labeled_only          0.692252             15378.654424              0.566506             0.000002                0.000615        0.124331
+MultiModalVAE   mel+lyrics          16   1.0 0.001    60.0           2     KMeans labeled_only          0.692226             19921.941496              0.535974            -0.000234                0.000430        0.124058
+     BasicVAE          mel          16   1.0 0.001    60.0           2     KMeans labeled_only          0.657639             19638.982083              0.548722            -0.000257                0.000489        0.125147
+     BasicVAE          mel          32   1.0 0.001    60.0           2     KMeans labeled_only          0.655927             17643.524235              0.563950             0.000626                0.000354        0.124331
+
+=== Top 5 by ARI (labeled_only) ===
+  model feature_type  latent_dim  beta  lr  epochs  n_clusters clustering     eval_set  silhouette_score  calinski_harabasz_index  davies_bouldin_index  adjusted_rand_index  normalized_mutual_info  cluster_purity
+PCA(32)          mel          32   NaN NaN     NaN          18        GMM labeled_only          0.002606               466.729362              2.986435             0.204130                0.295248        0.403848
+PCA(16)          mel          16   NaN NaN     NaN          18        GMM labeled_only          0.005649               551.657673              2.210403             0.194455                0.297290        0.409202
+PCA(32)          mel          32   NaN NaN     NaN          10        GMM labeled_only          0.030395               596.906410              3.323369             0.167256                0.253280        0.346674
+PCA(16)          mel          16   NaN NaN     NaN          10        GMM labeled_only          0.035191               777.411690              2.858821             0.139359                0.237004        0.337780
+PCA(16)          mel          16   NaN NaN     NaN          18     KMeans labeled_only          0.110935              1121.531807              1.767984             0.117208                0.189872        0.321445
+
+=== Language Separation (K=2) ===
+        model feature_type  latent_dim  beta    lr  epochs  n_clusters clustering eval_set  silhouette_score  calinski_harabasz_index  davies_bouldin_index  adjusted_rand_index  normalized_mutual_info  cluster_purity
+     BasicVAE          mel          16   1.0 0.001    60.0           2     KMeans language          0.659016             35491.528947              0.551891            -0.000021            2.108617e-05        0.501673
+     BasicVAE          mel          16   1.0 0.001    60.0           2     KMeans language          0.659016             35491.528947              0.551891            -0.000021            2.108617e-05        0.501673
+ BetaVAE_b2.0          mel          16   2.0 0.001    60.0           2     KMeans language          0.555902             34202.153229              0.629207             0.000074            8.893740e-05        0.505570
+ BetaVAE_b2.0          mel          16   2.0 0.001    60.0           2     KMeans language          0.555902             34202.153229              0.629207             0.000074            8.893740e-05        0.505570
+     BasicVAE          mel          32   1.0 0.001    60.0           2     KMeans language          0.656784             32134.168127              0.564114            -0.000014            1.651966e-05        0.502023
+     BasicVAE          mel          32   1.0 0.001    60.0           2     KMeans language          0.656784             32134.168127              0.564114            -0.000014            1.651966e-05        0.502023
+ BetaVAE_b2.0          mel          32   2.0 0.001    60.0           2     KMeans language          0.577385             42221.432108              0.590378            -0.000045            3.571130e-06        0.501124
+ BetaVAE_b2.0          mel          32   2.0 0.001    60.0           2     KMeans language          0.577385             42221.432108              0.590378            -0.000045            3.571130e-06        0.501124
+      ConvVAE          mel          16   1.0 0.001    60.0           2     KMeans language          0.693648             27954.323712              0.568400            -0.000021            2.809579e-07        0.500574
+      ConvVAE          mel          16   1.0 0.001    60.0           2     KMeans language          0.693648             27954.323712              0.568400            -0.000021            2.809579e-07        0.500574
+      ConvVAE          mel          32   1.0 0.001    60.0           2     KMeans language          0.721791             26530.008791              0.573405            -0.000017            1.251669e-05        0.500624
+      ConvVAE          mel          32   1.0 0.001    60.0           2     KMeans language          0.721791             26530.008791              0.573405            -0.000017            1.251669e-05        0.500624
+         CVAE          mel          16   1.0 0.001    60.0           2     KMeans language          0.653507             25729.193664              0.596659             0.000066            1.973806e-04        0.504770
+         CVAE          mel          16   1.0 0.001    60.0           2     KMeans language          0.653507             25729.193664              0.596659             0.000066            1.973806e-04        0.504770
+         CVAE          mel          32   1.0 0.001    60.0           2     KMeans language          0.642851             24416.493676              0.609396            -0.000007            2.338933e-05        0.502173
+         CVAE          mel          32   1.0 0.001    60.0           2     KMeans language          0.642851             24416.493676              0.609396            -0.000007            2.338933e-05        0.502173
+MultiModalVAE   mel+lyrics          16   1.0 0.001    60.0           2     KMeans language          0.692719             36425.458064              0.535030            -0.000024            2.843940e-06        0.501024
+MultiModalVAE   mel+lyrics          16   1.0 0.001    60.0           2     KMeans language          0.692719             36425.458064              0.535030            -0.000024            2.843940e-06        0.501024
+MultiModalVAE   mel+lyrics          32   1.0 0.001    60.0           2     KMeans language          0.631534             30680.744346              0.588098            -0.000031            3.309040e-06        0.500525
+MultiModalVAE   mel+lyrics          32   1.0 0.001    60.0           2     KMeans language          0.631534             30680.744346              0.588098            -0.000031            3.309040e-06        0.500525

@@ -1,0 +1,1507 @@
+
+=================================================================
+ FINE-TUNING: Loading data...
+=================================================================
+Loaded features: (20019, 256) from C:\Users\ASUS VivoBook\msc\CSE715\project\data\features\mel_features.npy
+  Dataset: 20019 samples, 256 features
+  Genres: {'untagged': 9000, 'rock': 1355, 'hiphop': 1350, 'metal': 1350, 'pop': 1350, 'folk': 1255, 'adhunik': 1250, 'indie': 1250, 'islamic': 1250, 'classical': 102, 'blues': 100, 'country': 100, 'disco': 100, 'reggae': 100, 'jazz': 99, 'devotional': 4, 'modern': 4}
+  Labeled tracks: 11019, Untagged (MagnaTagATune): 9000
+
+=================================================================
+ Starting hyperparameter grid search
+ Grid: betas=[1.0, 2.0], latent_dims=[16, 32], epochs=[60], K=[2, 10, 18], lr=[0.001]
+=================================================================
+
+
+>>> BasicVAE | latent=16, lr=0.001, epochs=60, beta=1.0
+
+============================================================
+ Training finetune_BasicVAE_ld16 on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 1.0
+ KL Annealing: True
+============================================================
+
+  Epoch   1/60 | Total: 0.7248 | Recon: 0.5730 | KL: 2.7324 | beta: 0.056 | LR: 1.0e-03
+  Epoch  10/60 | Total: 0.9671 | Recon: 0.8286 | KL: 0.2492 | beta: 0.556 | LR: 5.0e-04
+
+  Early stopping at epoch 11 (no improvement for 10 epochs)
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\finetune_BasicVAE_ld16.pt
+    Trained in 47s, best loss: 0.7248
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans
+==================================================
+  Silhouette Score:        0.6590
+  Calinski-Harabasz Index: 35491.53
+  Davies-Bouldin Index:    0.5519
+  Adjusted Rand Index:     0.0021
+  Norm. Mutual Info:       0.0003
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.6576
+  Calinski-Harabasz Index: 19638.98
+  Davies-Bouldin Index:    0.5487
+  Adjusted Rand Index:     -0.0003
+  Norm. Mutual Info:       0.0005
+  Cluster Purity:          0.1251
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6590
+  Calinski-Harabasz Index: 35491.53
+  Davies-Bouldin Index:    0.5519
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5017
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM
+==================================================
+  Silhouette Score:        0.5933
+  Calinski-Harabasz Index: 30192.12
+  Davies-Bouldin Index:    0.6369
+  Adjusted Rand Index:     0.0020
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.5923
+  Calinski-Harabasz Index: 16765.52
+  Davies-Bouldin Index:    0.6344
+  Adjusted Rand Index:     -0.0004
+  Norm. Mutual Info:       0.0003
+  Cluster Purity:          0.1259
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6590
+  Calinski-Harabasz Index: 35491.53
+  Davies-Bouldin Index:    0.5519
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5017
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans
+==================================================
+  Silhouette Score:        0.4997
+  Calinski-Harabasz Index: 86788.47
+  Davies-Bouldin Index:    0.5620
+  Adjusted Rand Index:     0.0004
+  Norm. Mutual Info:       0.0015
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4990
+  Calinski-Harabasz Index: 47966.84
+  Davies-Bouldin Index:    0.5593
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0023
+  Cluster Purity:          0.1328
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM
+==================================================
+  Silhouette Score:        0.2437
+  Calinski-Harabasz Index: 14806.13
+  Davies-Bouldin Index:    2.7015
+  Adjusted Rand Index:     0.0015
+  Norm. Mutual Info:       0.0019
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.2447
+  Calinski-Harabasz Index: 8200.70
+  Davies-Bouldin Index:    2.5536
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0029
+  Cluster Purity:          0.1317
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans
+==================================================
+  Silhouette Score:        0.4662
+  Calinski-Harabasz Index: 115286.21
+  Davies-Bouldin Index:    0.6212
+  Adjusted Rand Index:     0.0004
+  Norm. Mutual Info:       0.0027
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4652
+  Calinski-Harabasz Index: 63353.20
+  Davies-Bouldin Index:    0.6283
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0044
+  Cluster Purity:          0.1365
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM
+==================================================
+  Silhouette Score:        0.1207
+  Calinski-Harabasz Index: 12420.02
+  Davies-Bouldin Index:    4.3740
+  Adjusted Rand Index:     0.0009
+  Norm. Mutual Info:       0.0027
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.1173
+  Calinski-Harabasz Index: 6691.52
+  Davies-Bouldin Index:    4.2048
+  Adjusted Rand Index:     -0.0005
+  Norm. Mutual Info:       0.0043
+  Cluster Purity:          0.1360
+==================================================
+
+
+>>> BetaVAE_b2.0 | latent=16, lr=0.001, epochs=60, beta=2.0
+
+============================================================
+ Training finetune_BetaVAE_b2.0_ld16 on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 2.0
+ KL Annealing: True
+============================================================
+
+  Epoch   1/60 | Total: 0.8654 | Recon: 0.6893 | KL: 1.5847 | beta: 0.111 | LR: 1.0e-03
+  Epoch  10/60 | Total: 1.0050 | Recon: 1.0024 | KL: 0.0023 | beta: 1.111 | LR: 5.0e-04
+
+  Early stopping at epoch 12 (no improvement for 10 epochs)
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\finetune_BetaVAE_b2.0_ld16.pt
+    Trained in 48s, best loss: 0.8569
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans
+==================================================
+  Silhouette Score:        0.5559
+  Calinski-Harabasz Index: 34202.15
+  Davies-Bouldin Index:    0.6292
+  Adjusted Rand Index:     -0.0006
+  Norm. Mutual Info:       0.0003
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.5594
+  Calinski-Harabasz Index: 19019.77
+  Davies-Bouldin Index:    0.6260
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0004
+  Cluster Purity:          0.1269
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0 [K=2 language]
+==================================================
+  Silhouette Score:        0.5559
+  Calinski-Harabasz Index: 34202.15
+  Davies-Bouldin Index:    0.6292
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0001
+  Cluster Purity:          0.5056
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM
+==================================================
+  Silhouette Score:        0.5159
+  Calinski-Harabasz Index: 28254.66
+  Davies-Bouldin Index:    0.6412
+  Adjusted Rand Index:     0.0013
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM [labeled]
+==================================================
+  Silhouette Score:        0.5171
+  Calinski-Harabasz Index: 15611.32
+  Davies-Bouldin Index:    0.6415
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0003
+  Cluster Purity:          0.1245
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0 [K=2 language]
+==================================================
+  Silhouette Score:        0.5559
+  Calinski-Harabasz Index: 34202.15
+  Davies-Bouldin Index:    0.6292
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0001
+  Cluster Purity:          0.5056
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans
+==================================================
+  Silhouette Score:        0.3412
+  Calinski-Harabasz Index: 32910.99
+  Davies-Bouldin Index:    0.9318
+  Adjusted Rand Index:     -0.0021
+  Norm. Mutual Info:       0.0018
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.3436
+  Calinski-Harabasz Index: 18325.94
+  Davies-Bouldin Index:    0.9247
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0028
+  Cluster Purity:          0.1356
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM
+==================================================
+  Silhouette Score:        0.2704
+  Calinski-Harabasz Index: 18571.99
+  Davies-Bouldin Index:    1.4851
+  Adjusted Rand Index:     -0.0010
+  Norm. Mutual Info:       0.0021
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM [labeled]
+==================================================
+  Silhouette Score:        0.2692
+  Calinski-Harabasz Index: 10288.22
+  Davies-Bouldin Index:    1.4934
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0033
+  Cluster Purity:          0.1377
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans
+==================================================
+  Silhouette Score:        0.3030
+  Calinski-Harabasz Index: 27884.58
+  Davies-Bouldin Index:    0.9927
+  Adjusted Rand Index:     -0.0018
+  Norm. Mutual Info:       0.0028
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.3025
+  Calinski-Harabasz Index: 15465.37
+  Davies-Bouldin Index:    0.9931
+  Adjusted Rand Index:     -0.0003
+  Norm. Mutual Info:       0.0044
+  Cluster Purity:          0.1385
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM
+==================================================
+  Silhouette Score:        0.1974
+  Calinski-Harabasz Index: 16554.80
+  Davies-Bouldin Index:    1.2239
+  Adjusted Rand Index:     -0.0010
+  Norm. Mutual Info:       0.0027
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM [labeled]
+==================================================
+  Silhouette Score:        0.1972
+  Calinski-Harabasz Index: 9094.54
+  Davies-Bouldin Index:    1.2245
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0044
+  Cluster Purity:          0.1398
+==================================================
+
+
+>>> BasicVAE | latent=32, lr=0.001, epochs=60, beta=1.0
+
+============================================================
+ Training finetune_BasicVAE_ld32 on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 1.0
+ KL Annealing: True
+============================================================
+
+  Epoch   1/60 | Total: 0.7785 | Recon: 0.6207 | KL: 2.8400 | beta: 0.056 | LR: 1.0e-03
+  Epoch  10/60 | Total: 0.9650 | Recon: 0.8281 | KL: 0.2464 | beta: 0.556 | LR: 5.0e-04
+
+  Early stopping at epoch 12 (no improvement for 10 epochs)
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\finetune_BasicVAE_ld32.pt
+    Trained in 51s, best loss: 0.7419
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans
+==================================================
+  Silhouette Score:        0.6568
+  Calinski-Harabasz Index: 32134.17
+  Davies-Bouldin Index:    0.5641
+  Adjusted Rand Index:     0.0002
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.6559
+  Calinski-Harabasz Index: 17643.52
+  Davies-Bouldin Index:    0.5639
+  Adjusted Rand Index:     0.0006
+  Norm. Mutual Info:       0.0004
+  Cluster Purity:          0.1243
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6568
+  Calinski-Harabasz Index: 32134.17
+  Davies-Bouldin Index:    0.5641
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5020
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM
+==================================================
+  Silhouette Score:        0.5613
+  Calinski-Harabasz Index: 25908.28
+  Davies-Bouldin Index:    0.6813
+  Adjusted Rand Index:     -0.0005
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.5631
+  Calinski-Harabasz Index: 14374.28
+  Davies-Bouldin Index:    0.6788
+  Adjusted Rand Index:     0.0002
+  Norm. Mutual Info:       0.0003
+  Cluster Purity:          0.1233
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6568
+  Calinski-Harabasz Index: 32134.17
+  Davies-Bouldin Index:    0.5641
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5020
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans
+==================================================
+  Silhouette Score:        0.5047
+  Calinski-Harabasz Index: 87240.67
+  Davies-Bouldin Index:    0.5416
+  Adjusted Rand Index:     0.0005
+  Norm. Mutual Info:       0.0018
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.5066
+  Calinski-Harabasz Index: 47448.28
+  Davies-Bouldin Index:    0.5447
+  Adjusted Rand Index:     0.0000
+  Norm. Mutual Info:       0.0029
+  Cluster Purity:          0.1352
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM
+==================================================
+  Silhouette Score:        0.1862
+  Calinski-Harabasz Index: 12715.39
+  Davies-Bouldin Index:    2.4544
+  Adjusted Rand Index:     -0.0007
+  Norm. Mutual Info:       0.0015
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.1831
+  Calinski-Harabasz Index: 7023.43
+  Davies-Bouldin Index:    2.2710
+  Adjusted Rand Index:     0.0003
+  Norm. Mutual Info:       0.0025
+  Cluster Purity:          0.1335
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans
+==================================================
+  Silhouette Score:        0.4852
+  Calinski-Harabasz Index: 126762.48
+  Davies-Bouldin Index:    0.5636
+  Adjusted Rand Index:     0.0004
+  Norm. Mutual Info:       0.0028
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4864
+  Calinski-Harabasz Index: 69704.85
+  Davies-Bouldin Index:    0.5586
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0046
+  Cluster Purity:          0.1363
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM
+==================================================
+  Silhouette Score:        0.0659
+  Calinski-Harabasz Index: 12104.63
+  Davies-Bouldin Index:    3.6750
+  Adjusted Rand Index:     -0.0004
+  Norm. Mutual Info:       0.0030
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BasicVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.0678
+  Calinski-Harabasz Index: 6600.67
+  Davies-Bouldin Index:    4.0621
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0048
+  Cluster Purity:          0.1393
+==================================================
+
+
+>>> BetaVAE_b2.0 | latent=32, lr=0.001, epochs=60, beta=2.0
+
+============================================================
+ Training finetune_BetaVAE_b2.0_ld32 on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 2.0
+ KL Annealing: True
+============================================================
+
+  Epoch   1/60 | Total: 0.9042 | Recon: 0.7217 | KL: 1.6425 | beta: 0.111 | LR: 1.0e-03
+  Epoch  10/60 | Total: 1.0038 | Recon: 1.0017 | KL: 0.0019 | beta: 1.111 | LR: 5.0e-04
+
+  Early stopping at epoch 12 (no improvement for 10 epochs)
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\finetune_BetaVAE_b2.0_ld32.pt
+    Trained in 52s, best loss: 0.8706
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans
+==================================================
+  Silhouette Score:        0.5774
+  Calinski-Harabasz Index: 42221.43
+  Davies-Bouldin Index:    0.5904
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0003
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.5782
+  Calinski-Harabasz Index: 23379.85
+  Davies-Bouldin Index:    0.5896
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0005
+  Cluster Purity:          0.1251
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0 [K=2 language]
+==================================================
+  Silhouette Score:        0.5774
+  Calinski-Harabasz Index: 42221.43
+  Davies-Bouldin Index:    0.5904
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5011
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM
+==================================================
+  Silhouette Score:        0.4971
+  Calinski-Harabasz Index: 27999.11
+  Davies-Bouldin Index:    0.6708
+  Adjusted Rand Index:     -0.0012
+  Norm. Mutual Info:       0.0003
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM [labeled]
+==================================================
+  Silhouette Score:        0.4967
+  Calinski-Harabasz Index: 15374.56
+  Davies-Bouldin Index:    0.6699
+  Adjusted Rand Index:     0.0000
+  Norm. Mutual Info:       0.0005
+  Cluster Purity:          0.1261
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0 [K=2 language]
+==================================================
+  Silhouette Score:        0.5774
+  Calinski-Harabasz Index: 42221.43
+  Davies-Bouldin Index:    0.5904
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5011
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans
+==================================================
+  Silhouette Score:        0.3827
+  Calinski-Harabasz Index: 38438.67
+  Davies-Bouldin Index:    0.8937
+  Adjusted Rand Index:     -0.0009
+  Norm. Mutual Info:       0.0018
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.3821
+  Calinski-Harabasz Index: 21220.22
+  Davies-Bouldin Index:    0.9015
+  Adjusted Rand Index:     -0.0004
+  Norm. Mutual Info:       0.0030
+  Cluster Purity:          0.1357
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM
+==================================================
+  Silhouette Score:        0.2482
+  Calinski-Harabasz Index: 28092.65
+  Davies-Bouldin Index:    1.1613
+  Adjusted Rand Index:     0.0002
+  Norm. Mutual Info:       0.0019
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM [labeled]
+==================================================
+  Silhouette Score:        0.2481
+  Calinski-Harabasz Index: 15374.60
+  Davies-Bouldin Index:    1.1632
+  Adjusted Rand Index:     0.0000
+  Norm. Mutual Info:       0.0030
+  Cluster Purity:          0.1333
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans
+==================================================
+  Silhouette Score:        0.3020
+  Calinski-Harabasz Index: 33631.22
+  Davies-Bouldin Index:    0.9600
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0029
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.3009
+  Calinski-Harabasz Index: 18559.21
+  Davies-Bouldin Index:    0.9634
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0048
+  Cluster Purity:          0.1372
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM
+==================================================
+  Silhouette Score:        0.1739
+  Calinski-Harabasz Index: 19159.70
+  Davies-Bouldin Index:    1.5215
+  Adjusted Rand Index:     0.0002
+  Norm. Mutual Info:       0.0030
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: BetaVAE_b2.0+GMM [labeled]
+==================================================
+  Silhouette Score:        0.1700
+  Calinski-Harabasz Index: 10396.03
+  Davies-Bouldin Index:    1.5341
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0049
+  Cluster Purity:          0.1383
+==================================================
+
+
+>>> ConvVAE | latent=16, lr=0.001, epochs=60
+
+============================================================
+ Training finetune_convvae_ld16 on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 1.0
+ KL Annealing: True
+============================================================
+
+  Epoch   1/60 | Total: 1.1248 | Recon: 0.9792 | KL: 2.6214 | beta: 0.056 | LR: 1.0e-03
+  Epoch  10/60 | Total: 0.9855 | Recon: 0.8796 | KL: 0.1906 | beta: 0.556 | LR: 5.0e-04
+
+  Early stopping at epoch 13 (no improvement for 10 epochs)
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\finetune_convvae_ld16.pt
+    Trained in 656s, best loss: 0.8824
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans
+==================================================
+  Silhouette Score:        0.6936
+  Calinski-Harabasz Index: 27954.32
+  Davies-Bouldin Index:    0.5684
+  Adjusted Rand Index:     -0.0003
+  Norm. Mutual Info:       0.0004
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.6923
+  Calinski-Harabasz Index: 15378.65
+  Davies-Bouldin Index:    0.5665
+  Adjusted Rand Index:     0.0000
+  Norm. Mutual Info:       0.0006
+  Cluster Purity:          0.1243
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6936
+  Calinski-Harabasz Index: 27954.32
+  Davies-Bouldin Index:    0.5684
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5006
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM
+==================================================
+  Silhouette Score:        0.6232
+  Calinski-Harabasz Index: 20747.72
+  Davies-Bouldin Index:    0.6887
+  Adjusted Rand Index:     -0.0006
+  Norm. Mutual Info:       0.0004
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.6234
+  Calinski-Harabasz Index: 11495.00
+  Davies-Bouldin Index:    0.6853
+  Adjusted Rand Index:     0.0000
+  Norm. Mutual Info:       0.0006
+  Cluster Purity:          0.1245
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6936
+  Calinski-Harabasz Index: 27954.32
+  Davies-Bouldin Index:    0.5684
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5006
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans
+==================================================
+  Silhouette Score:        0.4490
+  Calinski-Harabasz Index: 62787.42
+  Davies-Bouldin Index:    0.6254
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0016
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4480
+  Calinski-Harabasz Index: 34839.46
+  Davies-Bouldin Index:    0.6212
+  Adjusted Rand Index:     -0.0003
+  Norm. Mutual Info:       0.0025
+  Cluster Purity:          0.1325
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM
+==================================================
+  Silhouette Score:        -0.0119
+  Calinski-Harabasz Index: 10033.71
+  Davies-Bouldin Index:    2.6402
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0017
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        -0.0132
+  Calinski-Harabasz Index: 5272.49
+  Davies-Bouldin Index:    2.4602
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0027
+  Cluster Purity:          0.1305
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans
+==================================================
+  Silhouette Score:        0.3698
+  Calinski-Harabasz Index: 75936.43
+  Davies-Bouldin Index:    0.7393
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0026
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.3672
+  Calinski-Harabasz Index: 41295.95
+  Davies-Bouldin Index:    0.7505
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0040
+  Cluster Purity:          0.1329
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM
+==================================================
+  Silhouette Score:        -0.0830
+  Calinski-Harabasz Index: 8829.41
+  Davies-Bouldin Index:    3.2784
+  Adjusted Rand Index:     -0.0008
+  Norm. Mutual Info:       0.0027
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        -0.0859
+  Calinski-Harabasz Index: 4734.39
+  Davies-Bouldin Index:    3.5559
+  Adjusted Rand Index:     -0.0005
+  Norm. Mutual Info:       0.0042
+  Cluster Purity:          0.1337
+==================================================
+
+
+>>> ConvVAE | latent=32, lr=0.001, epochs=60
+
+============================================================
+ Training finetune_convvae_ld32 on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 1.0
+ KL Annealing: True
+============================================================
+
+  Epoch   1/60 | Total: 1.1704 | Recon: 1.0584 | KL: 2.0150 | beta: 0.056 | LR: 1.0e-03
+  Epoch  10/60 | Total: 0.9815 | Recon: 0.8700 | KL: 0.2007 | beta: 0.556 | LR: 5.0e-04
+
+  Early stopping at epoch 12 (no improvement for 10 epochs)
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\finetune_convvae_ld32.pt
+    Trained in 585s, best loss: 0.8818
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans
+==================================================
+  Silhouette Score:        0.7218
+  Calinski-Harabasz Index: 26530.01
+  Davies-Bouldin Index:    0.5734
+  Adjusted Rand Index:     0.0014
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.7250
+  Calinski-Harabasz Index: 15027.40
+  Davies-Bouldin Index:    0.5667
+  Adjusted Rand Index:     0.0002
+  Norm. Mutual Info:       0.0004
+  Cluster Purity:          0.1241
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.7218
+  Calinski-Harabasz Index: 26530.01
+  Davies-Bouldin Index:    0.5734
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5006
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM
+==================================================
+  Silhouette Score:        0.5694
+  Calinski-Harabasz Index: 15879.61
+  Davies-Bouldin Index:    0.8274
+  Adjusted Rand Index:     -0.0004
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.5741
+  Calinski-Harabasz Index: 8925.33
+  Davies-Bouldin Index:    0.8225
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.1243
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.7218
+  Calinski-Harabasz Index: 26530.01
+  Davies-Bouldin Index:    0.5734
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5006
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans
+==================================================
+  Silhouette Score:        0.4216
+  Calinski-Harabasz Index: 59541.44
+  Davies-Bouldin Index:    0.6525
+  Adjusted Rand Index:     -0.0004
+  Norm. Mutual Info:       0.0018
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4209
+  Calinski-Harabasz Index: 33022.54
+  Davies-Bouldin Index:    0.6545
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0029
+  Cluster Purity:          0.1330
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM
+==================================================
+  Silhouette Score:        -0.0326
+  Calinski-Harabasz Index: 8033.40
+  Davies-Bouldin Index:    5.2640
+  Adjusted Rand Index:     0.0008
+  Norm. Mutual Info:       0.0018
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        -0.0312
+  Calinski-Harabasz Index: 4591.26
+  Davies-Bouldin Index:    5.1608
+  Adjusted Rand Index:     0.0000
+  Norm. Mutual Info:       0.0028
+  Cluster Purity:          0.1336
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans
+==================================================
+  Silhouette Score:        0.3196
+  Calinski-Harabasz Index: 65825.34
+  Davies-Bouldin Index:    0.8123
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0031
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.3208
+  Calinski-Harabasz Index: 36070.97
+  Davies-Bouldin Index:    0.8189
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0051
+  Cluster Purity:          0.1372
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM
+==================================================
+  Silhouette Score:        -0.1158
+  Calinski-Harabasz Index: 7314.27
+  Davies-Bouldin Index:    4.2696
+  Adjusted Rand Index:     -0.0004
+  Norm. Mutual Info:       0.0027
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: ConvVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        -0.1172
+  Calinski-Harabasz Index: 4045.69
+  Davies-Bouldin Index:    4.3722
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0044
+  Cluster Purity:          0.1373
+==================================================
+
+
+>>> CVAE | latent=16, lr=0.001, epochs=60
+
+============================================================
+ Training finetune_cvae_ld16 (CVAE) on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 1.0
+============================================================
+
+  Epoch   1/60 | Total: 0.6891 | Recon: 0.5607 | KL: 2.3113 | beta: 0.056 | LR: 1.0e-03
+  Epoch  10/60 | Total: 0.8502 | Recon: 0.7435 | KL: 0.1920 | beta: 0.556 | LR: 5.0e-04
+
+  Early stopping at epoch 12
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\finetune_cvae_ld16.pt
+    Trained in 49s, best loss: 0.6652
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans
+==================================================
+  Silhouette Score:        0.6535
+  Calinski-Harabasz Index: 25729.19
+  Davies-Bouldin Index:    0.5967
+  Adjusted Rand Index:     0.0059
+  Norm. Mutual Info:       0.0006
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.6522
+  Calinski-Harabasz Index: 14291.43
+  Davies-Bouldin Index:    0.6015
+  Adjusted Rand Index:     0.0006
+  Norm. Mutual Info:       0.0007
+  Cluster Purity:          0.1246
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6535
+  Calinski-Harabasz Index: 25729.19
+  Davies-Bouldin Index:    0.5967
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.5048
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM
+==================================================
+  Silhouette Score:        0.4330
+  Calinski-Harabasz Index: 16041.57
+  Davies-Bouldin Index:    0.8410
+  Adjusted Rand Index:     0.0022
+  Norm. Mutual Info:       0.0005
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.4347
+  Calinski-Harabasz Index: 8834.90
+  Davies-Bouldin Index:    0.8368
+  Adjusted Rand Index:     0.0003
+  Norm. Mutual Info:       0.0008
+  Cluster Purity:          0.1264
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6535
+  Calinski-Harabasz Index: 25729.19
+  Davies-Bouldin Index:    0.5967
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.5048
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans
+==================================================
+  Silhouette Score:        0.4933
+  Calinski-Harabasz Index: 75215.84
+  Davies-Bouldin Index:    0.5561
+  Adjusted Rand Index:     0.0018
+  Norm. Mutual Info:       0.0019
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4926
+  Calinski-Harabasz Index: 41790.15
+  Davies-Bouldin Index:    0.5572
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0030
+  Cluster Purity:          0.1315
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM
+==================================================
+  Silhouette Score:        0.0455
+  Calinski-Harabasz Index: 7635.21
+  Davies-Bouldin Index:    3.2584
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0019
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.0464
+  Calinski-Harabasz Index: 4081.16
+  Davies-Bouldin Index:    3.2171
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0029
+  Cluster Purity:          0.1321
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans
+==================================================
+  Silhouette Score:        0.4560
+  Calinski-Harabasz Index: 107518.19
+  Davies-Bouldin Index:    0.6031
+  Adjusted Rand Index:     0.0013
+  Norm. Mutual Info:       0.0028
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4595
+  Calinski-Harabasz Index: 61691.74
+  Davies-Bouldin Index:    0.5940
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0043
+  Cluster Purity:          0.1375
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM
+==================================================
+  Silhouette Score:        0.0385
+  Calinski-Harabasz Index: 6340.21
+  Davies-Bouldin Index:    6.3795
+  Adjusted Rand Index:     -0.0003
+  Norm. Mutual Info:       0.0031
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.0402
+  Calinski-Harabasz Index: 3484.05
+  Davies-Bouldin Index:    6.5892
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0049
+  Cluster Purity:          0.1396
+==================================================
+
+
+>>> CVAE | latent=32, lr=0.001, epochs=60
+
+============================================================
+ Training finetune_cvae_ld32 (CVAE) on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 1.0
+============================================================
+
+  Epoch   1/60 | Total: 0.7410 | Recon: 0.6016 | KL: 2.5094 | beta: 0.056 | LR: 1.0e-03
+  Epoch  10/60 | Total: 0.8574 | Recon: 0.7527 | KL: 0.1884 | beta: 0.556 | LR: 5.0e-04
+
+  Early stopping at epoch 12
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\finetune_cvae_ld32.pt
+    Trained in 57s, best loss: 0.6811
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans
+==================================================
+  Silhouette Score:        0.6429
+  Calinski-Harabasz Index: 24416.49
+  Davies-Bouldin Index:    0.6094
+  Adjusted Rand Index:     -0.0009
+  Norm. Mutual Info:       0.0003
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.6423
+  Calinski-Harabasz Index: 13321.71
+  Davies-Bouldin Index:    0.6017
+  Adjusted Rand Index:     0.0001
+  Norm. Mutual Info:       0.0005
+  Cluster Purity:          0.1255
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6429
+  Calinski-Harabasz Index: 24416.49
+  Davies-Bouldin Index:    0.6094
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5022
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM
+==================================================
+  Silhouette Score:        0.4405
+  Calinski-Harabasz Index: 16016.78
+  Davies-Bouldin Index:    0.8460
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0001
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.4370
+  Calinski-Harabasz Index: 8756.12
+  Davies-Bouldin Index:    0.8487
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0002
+  Cluster Purity:          0.1241
+==================================================
+
+
+==================================================C:\Users\ASUS VivoBook\msc\CSE715\project\src\train.py:404: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\python_variable_indexing.cpp:353.)
+  audio = batch["audio"].to(device)
+
+ Clustering Evaluation: CVAE [K=2 language]
+==================================================
+  Silhouette Score:        0.6429
+  Calinski-Harabasz Index: 24416.49
+  Davies-Bouldin Index:    0.6094
+  Adjusted Rand Index:     -0.0000
+  Norm. Mutual Info:       0.0000
+  Cluster Purity:          0.5022
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans
+==================================================
+  Silhouette Score:        0.4738
+  Calinski-Harabasz Index: 65582.27
+  Davies-Bouldin Index:    0.5992
+  Adjusted Rand Index:     -0.0010
+  Norm. Mutual Info:       0.0018
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4741
+  Calinski-Harabasz Index: 35210.23
+  Davies-Bouldin Index:    0.6005
+  Adjusted Rand Index:     -0.0004
+  Norm. Mutual Info:       0.0030
+  Cluster Purity:          0.1324
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM
+==================================================
+  Silhouette Score:        0.1148
+  Calinski-Harabasz Index: 7167.14
+  Davies-Bouldin Index:    3.2289
+  Adjusted Rand Index:     -0.0006
+  Norm. Mutual Info:       0.0020
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.1184
+  Calinski-Harabasz Index: 3994.78
+  Davies-Bouldin Index:    3.0476
+  Adjusted Rand Index:     -0.0002
+  Norm. Mutual Info:       0.0032
+  Cluster Purity:          0.1347
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans
+==================================================
+  Silhouette Score:        0.4280
+  Calinski-Harabasz Index: 85100.76
+  Davies-Bouldin Index:    0.6768
+  Adjusted Rand Index:     -0.0006
+  Norm. Mutual Info:       0.0030
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+KMeans [labeled]
+==================================================
+  Silhouette Score:        0.4290
+  Calinski-Harabasz Index: 46286.83
+  Davies-Bouldin Index:    0.6761
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0048
+  Cluster Purity:          0.1377
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM
+==================================================
+  Silhouette Score:        0.0730
+  Calinski-Harabasz Index: 6497.07
+  Davies-Bouldin Index:    3.4563
+  Adjusted Rand Index:     -0.0001
+  Norm. Mutual Info:       0.0032
+  Cluster Purity:          0.4496
+==================================================
+
+
+==================================================
+ Clustering Evaluation: CVAE+GMM [labeled]
+==================================================
+  Silhouette Score:        0.0706
+  Calinski-Harabasz Index: 3561.29
+  Davies-Bouldin Index:    3.2550
+  Adjusted Rand Index:     0.0000
+  Norm. Mutual Info:       0.0050
+  Cluster Purity:          0.1418
+==================================================
+
+
+>>> MultiModalVAE | latent=16, lr=0.001, epochs=60
+
+============================================================
+ Training finetune_mmvae_ld16 (MultiModalVAE) on cpu
+ Epochs: 60, LR: 0.001, KL Weight: 1.0
+============================================================
+
+Traceback (most recent call last):
+  File "C:\Users\ASUS VivoBook\msc\CSE715\project\run_finetune.py", line 452, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\ASUS VivoBook\msc\CSE715\project\run_finetune.py", line 361, in main
+    result = train_multimodal_vae(
+        model, mm_loader, num_epochs=epochs,
+        learning_rate=lr, kl_weight=1.0,
+        model_name=f"finetune_mmvae_ld{latent_dim}")
+  File "C:\Users\ASUS VivoBook\msc\CSE715\project\src\train.py", line 404, in train_multimodal_vae
+    audio = batch["audio"].to(device)
+            ~~~~~^^^^^^^^^
+IndexError: too many indices for tensor of dimension 2

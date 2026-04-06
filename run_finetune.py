@@ -117,6 +117,10 @@ def main():
     parser.add_argument("--use-real-audio", action="store_true")
     parser.add_argument("--quick", action="store_true", help="Reduced grid for faster runs")
     parser.add_argument("--skip-multimodal", action="store_true", help="Skip MultiModalVAE")
+    parser.add_argument("--skip-basic-beta", action="store_true", help="Skip BasicVAE/BetaVAE")
+    parser.add_argument("--skip-conv", action="store_true", help="Skip ConvVAE")
+    parser.add_argument("--skip-cvae", action="store_true", help="Skip CVAE")
+    parser.add_argument("--resume", action="store_true", help="Append to existing CSV instead of overwriting")
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
@@ -201,9 +205,11 @@ def main():
         "silhouette_score", "calinski_harabasz_index", "davies_bouldin_index",
         "adjusted_rand_index", "normalized_mutual_info", "cluster_purity",
     ]
-    with open(results_csv, "w", newline="") as f:
+    csv_mode = "a" if args.resume else "w"
+    with open(results_csv, csv_mode, newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
+        if not args.resume:
+            writer.writeheader()
 
     total_experiments = 0
 
@@ -276,7 +282,7 @@ def main():
     print(f"{'='*65}\n")
 
     # ---- 1. BasicVAE / BetaVAE ----
-    for latent_dim, lr, epochs in product(latent_dims, lrs, epochs_list):
+    for latent_dim, lr, epochs in ([] if args.skip_basic_beta else product(latent_dims, lrs, epochs_list)):
         for beta in betas:
             model_name = f"BetaVAE_b{beta}" if beta != 1.0 else "BasicVAE"
             print(f"\n>>> {model_name} | latent={latent_dim}, lr={lr}, "
@@ -299,7 +305,7 @@ def main():
             evaluate_and_log(latent, model_name, "mel", latent_dim, beta, lr, epochs)
 
     # ---- 2. ConvVAE ----
-    for latent_dim, lr, epochs in product(latent_dims, lrs, epochs_list):
+    for latent_dim, lr, epochs in ([] if args.skip_conv else product(latent_dims, lrs, epochs_list)):
         model_name = "ConvVAE"
         print(f"\n>>> {model_name} | latent={latent_dim}, lr={lr}, epochs={epochs}")
 
@@ -319,7 +325,7 @@ def main():
         evaluate_and_log(latent, model_name, "mel", latent_dim, 1.0, lr, epochs)
 
     # ---- 3. CVAE (conditioned on language) ----
-    for latent_dim, lr, epochs in product(latent_dims, lrs, epochs_list):
+    for latent_dim, lr, epochs in ([] if args.skip_cvae else product(latent_dims, lrs, epochs_list)):
         model_name = "CVAE"
         print(f"\n>>> {model_name} | latent={latent_dim}, lr={lr}, epochs={epochs}")
 
@@ -348,7 +354,7 @@ def main():
             model_name = "MultiModalVAE"
             print(f"\n>>> {model_name} | latent={latent_dim}, lr={lr}, epochs={epochs}")
 
-            mm_dataset = MultiModalMusicDataset(features_norm, lyrics_norm)
+            mm_dataset = MultiModalMusicDataset(features_norm, lyrics_norm, fusion="separate")
             mm_loader = DataLoader(mm_dataset, batch_size=batch_size,
                                    shuffle=True, drop_last=False)
 
@@ -384,7 +390,8 @@ def main():
                 labels = clust_fn(pca_feat, n_clusters=k)
 
                 metrics = evaluate_clustering(
-                    pca_feat, labels, labels_true=ground_truth_labeled,
+                    pca_feat[labeled_mask], labels[labeled_mask],
+                    labels_true=ground_truth_labeled,
                     method_name=f"PCA({n_comp})+{clust_name}")
                 log_result({
                     "model": f"PCA({n_comp})", "feature_type": "mel",
@@ -397,7 +404,8 @@ def main():
         # Raw features baseline
         labels = kmeans_clustering(features_norm, n_clusters=k)
         metrics = evaluate_clustering(
-            features_norm, labels, labels_true=ground_truth_labeled,
+            features_norm[labeled_mask], labels[labeled_mask],
+            labels_true=ground_truth_labeled,
             method_name="Raw+KMeans")
         log_result({
             "model": "Raw", "feature_type": "mel",
