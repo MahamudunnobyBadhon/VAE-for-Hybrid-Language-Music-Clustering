@@ -14,6 +14,7 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage[table]{xcolor}
+\usepackage{float}
 \usepackage{multirow}
 
 \title{Variational Autoencoders for Hybrid Language Music Clustering:\\
@@ -123,7 +124,7 @@ We evaluate against two ground-truth label sets:
 
 Figure~\ref{fig:pipeline} illustrates the end-to-end data construction and modelling pipeline. Raw audio from three sources is processed through feature extraction and lyrics embedding stages, then passed to progressive VAE architectures evaluated at multiple cluster counts.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{dataset_pipeline}
 \caption{End-to-end pipeline: three audio datasets (GTZAN, MagnaTagATune, BanglaBeats) are combined into a 20,020-track hybrid corpus, processed through audio feature extraction and multilingual lyrics embedding, then passed to three tiers of VAE models evaluated at $K=\{2,10,18\}$ clusters.}
@@ -132,7 +133,7 @@ Figure~\ref{fig:pipeline} illustrates the end-to-end data construction and model
 
 \subsection{Dataset}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Dataset composition.}
 \label{tab:dataset}
@@ -163,7 +164,7 @@ We report five standard clustering metrics:
 
 \subsection{Ablation: Synthetic vs.\ Real Data}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{progression_comparison}
 \caption{Performance comparison between initial synthetic dataset (500 samples, 2 clusters) and final real dataset (20,020 samples, 18 genres). VAE Silhouette improved from 0.393 to 0.429 ($+9\%$); PCA Silhouette dropped from 0.336 to 0.105 ($-69\%$), demonstrating the VAE's superior robustness to data scale and diversity.}
@@ -172,7 +173,7 @@ We report five standard clustering metrics:
 
 Initial experiments used 500 synthesized audio clips to validate the pipeline. Real data (20,020 tracks) shows that linear baselines (PCA) collapse in performance while the VAE maintains and improves cluster quality---validating that the nonlinear encoder learns genuine latent structure rather than fitting noise.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{full_comparison}
 \caption{Comprehensive comparison across all experiments: Silhouette Score and ARI for synthetic (500-sample) vs.\ real (20,020-sample) data, VAE vs.\ PCA gap progression across tasks, and summary table. VAE representations are significantly more robust to data scale and diversity.}
@@ -185,7 +186,7 @@ Initial experiments used 500 synthesized audio clips to validate the pipeline. R
 
 \subsection{Easy Task: MLP-VAE on MFCC}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Easy Task results (MFCC features, $N\!=\!20{,}020$, $K\!=\!10$).}
 \label{tab:easy}
@@ -201,7 +202,7 @@ Raw Features + K-Means & 0.0974 & 1,462 & 2.11 & $-7\%$ SS \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.48\linewidth}
 \includegraphics[width=\linewidth]{easy_training}
@@ -218,7 +219,7 @@ Raw Features + K-Means & 0.0974 & 1,462 & 2.11 & $-7\%$ SS \\
 \label{fig:easy}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.55\linewidth]{easy_tsne_language}
 \caption{t-SNE of Easy VAE latent space colored by language (English blue, Bangla orange). The two languages form partially distinct regions, confirming that MFCC features capture language-correlated acoustic patterns.}
@@ -227,7 +228,7 @@ Raw Features + K-Means & 0.0974 & 1,462 & 2.11 & $-7\%$ SS \\
 
 The MLP-VAE achieves a Silhouette Score of 0.429, outperforming PCA by $4.1\times$ in Silhouette and $43.6\times$ in CHI. The VAE's nonlinear encoder learns a compact latent manifold that separates musical structure far more effectively than linear projection. The t-SNE visualization (Figure~\ref{fig:easy}) shows 10 well-separated clusters; coloring by language (Figure~\ref{fig:easy_language}) reveals that 7 of 10 clusters are language-pure ($>80\%$ from one language).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.6\linewidth]{easy_elbow}
 \caption{Elbow method and Silhouette analysis for the Easy task MLP-VAE latent space. The elbow around $K\!=\!8$--$10$ confirms that $K\!=\!10$ is a reasonable cluster count for a 10-genre dataset.}
@@ -236,7 +237,7 @@ The MLP-VAE achieves a Silhouette Score of 0.429, outperforming PCA by $4.1\time
 
 \subsection{Medium Task: ConvVAE and HybridVAE on Mel Spectrograms}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Medium Task results (Mel features, $N\!=\!20{,}019$, $K\!=\!10$). ARI/NMI/Purity evaluated against genre+language labels.}
 \label{tab:medium}
@@ -255,7 +256,7 @@ DBSCAN & 0.845 & 158 & 0.117 & $\approx\!0$ & $\approx\!0$ \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.48\linewidth}
 \includegraphics[width=\linewidth]{medium_tsne_kmeans}
@@ -272,7 +273,7 @@ DBSCAN & 0.845 & 158 & 0.117 & $\approx\!0$ & $\approx\!0$ \\
 
 ConvVAE achieves the best geometric clustering (SS = 0.429, DBI = 0.749). HybridVAE sacrifices some geometric quality for dramatically improved label alignment: ARI jumps from 0.019 to 0.209 ($+1000\%$) and NMI from 0.143 to 0.384 ($+168\%$), demonstrating that multilingual lyrics embeddings provide strong language-discriminative signals. The gap arises because the 384-dim LaBSE proxy embeddings encode language identity directly, enabling the VAE to align its latent dimensions with language structure. DBSCAN collapsed to a single dense cluster (SS~0.845 is deceptive---all 20K points in one cluster).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.48\linewidth}
 \includegraphics[width=\linewidth]{medium_conv_training}
@@ -287,7 +288,7 @@ ConvVAE achieves the best geometric clustering (SS = 0.429, DBI = 0.749). Hybrid
 \label{fig:medium_training}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.48\linewidth}
 \includegraphics[width=\linewidth]{medium_conv_language}
@@ -304,7 +305,7 @@ ConvVAE achieves the best geometric clustering (SS = 0.429, DBI = 0.749). Hybrid
 
 \subsection{Hard Task: MultiModalVAE, CVAE, and Beta-VAE}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Hard Task results (Combined features 90-dim + Lyrics 384-dim, $N\!=\!19{,}019$, $K\!=\!10$). Note: Hard task uses 90-dim combined features (MFCC+spectral) for memory efficiency. VAE models at top, baselines shaded.}
 \label{tab:hard}
@@ -326,7 +327,7 @@ BetaVAE ($\beta\!=\!4$) + K-Means & \textbf{0.927}$^*$ & 3,159 & 1.099 & 0.013 &
 {\small $^*$BetaVAE $\beta\!=\!4$ over-regularises the latent space: SS is deceptively high (compact but semantically arbitrary clusters); see multi-K evaluation for full interpretation.}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.48\linewidth}
 \includegraphics[width=\linewidth]{hard_cvae_language}
@@ -341,7 +342,7 @@ BetaVAE ($\beta\!=\!4$) + K-Means & \textbf{0.927}$^*$ & 3,159 & 1.099 & 0.013 &
 \label{fig:hard_language}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.6\linewidth]{latent_traversal}
 \caption{Beta-VAE latent dimension traversal: dimension 0 varies from $-3$ to $+3$ while others are fixed. Each row of the heatmap shows the decoded mel-spectrogram feature vector. Smooth spectral transitions confirm partial disentanglement of acoustic attributes.}
@@ -350,7 +351,7 @@ BetaVAE ($\beta\!=\!4$) + K-Means & \textbf{0.927}$^*$ & 3,159 & 1.099 & 0.013 &
 
 The CVAE and MultiModalVAE achieve the best ARI (0.073 and 0.122) and NMI (0.278 and 0.267) among Hard task models, confirming that conditioning on language identity and joint audio-lyrics modelling improves genre discriminability. BetaVAE ($\beta\!=\!4$) achieves an artificially high SS = 0.927 due to over-regularization: the strong KL penalty collapses the latent space into a near-isotropic Gaussian, creating geometrically tight but semantically empty clusters (ARI $\approx 0$). Notably, the Autoencoder and PCA baselines score higher ARI (0.17) than most VAEs---this occurs because the combined 90-dim features preserve raw genre-discriminative patterns that the 32-dim VAE bottleneck discards. The VAE's advantage is in language separation (see Section~\ref{sec:language_eval}).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.32\linewidth}
 \includegraphics[width=\linewidth]{hard_beta_training}
@@ -370,7 +371,7 @@ The CVAE and MultiModalVAE achieve the best ARI (0.073 and 0.122) and NMI (0.278
 \label{fig:hard_training}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.32\linewidth}
 \includegraphics[width=\linewidth]{hard_beta_tsne_clusters}
@@ -395,7 +396,7 @@ The CVAE and MultiModalVAE achieve the best ARI (0.073 and 0.122) and NMI (0.278
 
 To assess robustness, we ran a post-hoc grid search (\texttt{run\_finetune.py}) over $\beta \in \{1.0, 2.0\}$, $d_z \in \{16, 32\}$, $K \in \{2, 10, 18\}$, and clustering methods $\in \{\text{K-Means, GMM}\}$, producing 156 experimental configurations evaluated against both genre (labeled tracks only) and language ($K\!=\!2$) ground truths.
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Hyperparameter sensitivity: best configurations per metric ($K\!=\!10$, KMeans, labeled-only eval).}
 \label{tab:finetune}
@@ -416,7 +417,7 @@ BetaVAE ($\beta\!=\!2$) & 32 & 2.0 & 0.382 & 21,220 & $\approx$0 & 0.003 \\
 
 Key findings: (1) $\beta\!=\!1.0$ consistently outperforms $\beta\!=\!2.0$ in Silhouette ($+32\%$), confirming the main task's choice. (2) $d_z\!=\!32$ is slightly better than $d_z\!=\!16$ (+1--2\%). (3) VAE models attain ARI $\approx 0$ under the labeled-only evaluation because this subset excludes the 9,000 MagnaTagATune tracks (reduced to $\sim$11,000 samples), drastically changing the cluster geometry. (4) PCA + GMM at $K\!=\!18$ achieves ARI = 0.204 --- competitive with HybridVAE (ARI = 0.209) --- when the cluster count matches the genre count, an instance of the well-known K-sensitivity of ARI.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{finetune_comparison}
 \caption{Before vs.\ after finetuning comparison. Left: Silhouette Score improves for all models except BetaVAE (whose high SS was already artefactual). Centre: ARI comparison between K=10 (main task) and K=18 (labeled-only, best achievable). Right: percentage SS improvement per model after finetuning the best hyperparameter configuration.}
@@ -428,7 +429,7 @@ Key findings: (1) $\beta\!=\!1.0$ consistently outperforms $\beta\!=\!2.0$ in Si
 
 A central question for hybrid-language music clustering is: \emph{do VAE representations separate languages and genres simultaneously?} We address this by evaluating all saved main-task models at $K\!\in\!\{2, 10, 18\}$ using the actual trained checkpoints (no retraining). Ground truth: $K\!=\!2$ uses binary English/Bangla labels; $K\!=\!10$ uses genre labels over all tracks; $K\!=\!18$ uses genre labels over labeled tracks only (excluding MagnaTagATune's 9,000 untagged clips).
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Multi-$K$ clustering evaluation across all tasks. $K\!=\!2$ (language), $K\!=\!10$ (genre, all), $K\!=\!18$ (genre, labeled only). Best per column in \textbf{bold}.}
 \label{tab:multi_k}
@@ -486,7 +487,7 @@ A central question for hybrid-language music clustering is: \emph{do VAE represe
 
 (5) \textbf{PCA baseline wins on ARI at $K\!=\!10$} (0.155 vs.\ 0.022 for BasicVAE): linear projections preserve genre-correlated frequency content without the information bottleneck of a 32-dim VAE latent space. VAE's advantage lies in \emph{compactness} (CHI 69$\times$ higher) and \emph{language structuring}, not raw genre discrimination.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{multi_k_comparison}
 \caption{Multi-K evaluation: ARI (left) and Silhouette Score (right) for all models at $K\!\in\!\{2,10,18\}$. HybridVAE dominates ARI at all K values; BetaVAE's high SS is noted as an over-regularization artefact (annotated). PCA baseline shows competitive ARI at K=10 but poor geometric quality.}
@@ -495,7 +496,7 @@ A central question for hybrid-language music clustering is: \emph{do VAE represe
 
 \subsection{Summary Across All Tasks}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Best model per task at $K\!=\!10$ (genre clustering) and $K\!=\!2$ (language separation).}
 \label{tab:summary}
@@ -556,6 +557,7 @@ Future directions include: (1) uniform clip length normalization to remove the 3
 % ============================================================
 Dataset credits: GTZAN~\cite{tzanetakis2002musical}, MagnaTagATune (Law et al., 2009), BanglaBeats (Jibon, Kaggle 2024). Lyrics embeddings: \texttt{paraphrase-multilingual-MiniLM-L12-v2}~\cite{reimers2019sentence}.
 
+\clearpage
 % ============================================================
 \bibliographystyle{plain}
 \begin{thebibliography}{20}
