@@ -166,6 +166,29 @@ python run_finetune.py --use-real-audio            # full grid, ~8 hours
 
 Results saved to `results/finetune/finetune_results.csv`.
 
+## Report
+
+The NeurIPS-format report is at `report/report.tex`. A compiled PDF (`report/report.pdf`) is included in the repository.
+
+To recompile the PDF (no LaTeX installation needed — uses [tectonic](https://tectonic-typesetting.github.io/)):
+
+```bash
+# Download tectonic (one-time, ~18 MB download, 47 MB extracted)
+python -c "
+import urllib.request, ssl, zipfile, io
+ctx = ssl.create_default_context(); ctx.check_hostname=False; ctx.verify_mode=0
+url = 'https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.15.0/tectonic-0.15.0-x86_64-pc-windows-msvc.zip'
+data = urllib.request.urlopen(url, context=ctx).read()
+zipfile.ZipFile(io.BytesIO(data)).extractall('.')
+print('tectonic.exe downloaded')
+"
+
+# Compile (downloads TeX packages automatically on first run)
+tectonic.exe report/report.tex
+```
+
+The PDF will appear at `report/report.pdf`.
+
 ## Reproducibility
 
 All scripts use `RANDOM_STATE=42` for numpy, PyTorch, and sklearn operations. Results can be reproduced by running the scripts with identical flags.
