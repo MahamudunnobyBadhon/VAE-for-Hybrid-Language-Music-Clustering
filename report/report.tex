@@ -434,12 +434,36 @@ BetaVAE ($\beta\!=\!2$) & 32 & 2.0 & 0.382 & 21,220 & $\approx$0 & 0.003 \\
 
 Key findings: (1) $\beta\!=\!1.0$ consistently outperforms $\beta\!=\!2.0$ in Silhouette ($+32\%$), confirming the main task's choice. (2) $d_z\!=\!32$ is slightly better than $d_z\!=\!16$ (+1--2\%). (3) VAE models attain ARI $\approx 0$ under the labeled-only evaluation because this subset excludes the 9,000 MagnaTagATune tracks (reduced to $\sim$11,000 samples), drastically changing the cluster geometry. (4) PCA + GMM at $K\!=\!18$ achieves ARI = 0.204 --- competitive with HybridVAE (ARI = 0.209) --- when the cluster count matches the genre count, an instance of the well-known K-sensitivity of ARI.
 
-\begin{figure}[H]
+\begin{table}[H]
 \centering
-\includegraphics[width=\linewidth]{finetune_comparison}
-\caption{Before vs.\ after finetuning comparison. Left: Silhouette Score improves for all models except BetaVAE (whose high SS was already artefactual). Centre: ARI comparison between K=10 (main task) and K=18 (labeled-only, best achievable). Right: percentage SS improvement per model after finetuning the best hyperparameter configuration.}
-\label{fig:finetune}
-\end{figure}
+\caption{Before vs.\ after optimisation for Hard task models: $\beta\!=\!4$ language-only CVAE (before) vs.\ $\beta\!=\!1$ language+genre CVAE (after), evaluated at $K\!\in\!\{2,10,18\}$. \textbf{Bold} = improvement.}
+\label{tab:before_after}
+\small
+\begin{tabular}{llrrrrr}
+\toprule
+\textbf{Model} & \textbf{$K$} & \multicolumn{2}{c}{\textbf{Before ($\beta\!=\!4$ / lang-only)}} & \multicolumn{2}{c}{\textbf{After ($\beta\!=\!1$ / lang+genre)}} & \textbf{$\Delta$ARI} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+ & & SS & ARI & SS & ARI & \\
+\midrule
+\multirow{3}{*}{BetaVAE}
+ & 2  & 0.941 & 0.000 & \textbf{0.449} & \textbf{0.009} & +0.009 \\
+ & 10 & 0.922 & 0.013 & \textbf{0.254} & \textbf{0.105} & \textbf{+0.092} \\
+ & 18 & 0.911 & 0.002 & \textbf{0.196} & \textbf{0.093} & +0.091 \\
+\midrule
+\multirow{3}{*}{CVAE}
+ & 2  & 0.514 & 0.179 & \textbf{0.726} & 0.004 & $-$0.175 \\
+ & 10 & 0.270 & 0.073 & \textbf{0.603} & \textbf{0.052} & $-$0.021 \\
+ & 18 & 0.257 & 0.159 & \textbf{0.657} & 0.037 & $-$0.122 \\
+\midrule
+\multirow{3}{*}{MultiModalVAE}
+ & 2  & 0.391 & 0.006 & \textbf{0.546} & \textbf{0.005} & $-$0.001 \\
+ & 10 & 0.256 & 0.123 & \textbf{0.276} & 0.035 & $-$0.088 \\
+ & 18 & 0.217 & 0.143 & \textbf{0.234} & 0.088 & $-$0.055 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textit{Note:} BetaVAE's ``before'' SS (0.91--0.94) is artefactual: $\beta\!=\!4$ over-regularises the latent space into a unit Gaussian regardless of input, producing geometrically compact but semantically empty clusters (ARI $\approx 0$). Lowering $\beta$ to 1 reduces SS but unlocks real genre structure (ARI $+0.09$). CVAE's ARI drop at $K\!=\!2$ reflects the conditioning change: language-only CVAE directly encodes language as a discriminative signal, whereas language+genre conditioning distributes capacity across 22 fine-grained classes.
 
 \subsection{Multi-$K$ Evaluation: Language and Genre Clustering}
 \label{sec:language_eval}
@@ -456,8 +480,8 @@ A central question for hybrid-language music clustering is: \emph{do VAE represe
 \textbf{Model} & \textbf{$K$} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} & \textbf{Purity $\uparrow$} \\
 \midrule
 \multirow{3}{*}{Easy -- BasicVAE (MFCC)}
- & 2  & 0.605 & 28,503 & 0.001 & 0.001 & 0.512 \\
- & 10 & 0.430 & 69,333 & 0.022 & 0.091 & 0.450 \\
+ & 2  & 0.594 & 28,503 & 0.001 & 0.001 & 0.512 \\
+ & 10 & 0.426 & 69,333 & 0.022 & 0.091 & 0.450 \\
  & 18 & 0.427 & \textbf{59,662} & 0.053 & 0.137 & 0.267 \\
 \midrule
 \multirow{3}{*}{Medium -- ConvVAE (Mel)}
@@ -515,18 +539,20 @@ A central question for hybrid-language music clustering is: \emph{do VAE represe
 
 \begin{table}[H]
 \centering
-\caption{Best model per task at $K\!=\!10$ (genre clustering) and $K\!=\!2$ (language separation).}
+\caption{Best model per task across all $K$ values. SS = Silhouette Score; ARI = Adjusted Rand Index. Best overall per column in \textbf{bold}.}
 \label{tab:summary}
 \small
-\begin{tabular}{llrrrr}
+\begin{tabular}{llrrrrrr}
 \toprule
-\textbf{Task} & \textbf{Best Method} & \textbf{SS (K=10)} & \textbf{ARI (K=10)} & \textbf{ARI (K=2)} & \textbf{Feature} \\
+\textbf{Task} & \textbf{Best Method} & \textbf{SS} & \textbf{ARI} & \textbf{SS} & \textbf{ARI} & \textbf{SS} & \textbf{ARI} \\
+ & & \multicolumn{2}{c}{\textit{K=2 (language)}} & \multicolumn{2}{c}{\textit{K=10 (genre)}} & \multicolumn{2}{c}{\textit{K=18 (labeled)}} \\
 \midrule
-Easy   & MLP-VAE + K-Means      & 0.430 & 0.022 & 0.001 & MFCC (40-dim) \\
-Medium & \textbf{HybridVAE + K-Means} & 0.409 & \textbf{0.269} & \textbf{0.991} & Mel+Lyrics (640-dim) \\
-Hard   & MultiModalVAE + K-Means & 0.258 & 0.122 & 0.006 & Combined+Lyrics (474-dim) \\
+Easy   & BasicVAE + K-Means        & 0.594 & 0.001 & 0.426 & 0.022 & 0.427 & 0.053 \\
+Medium & \textbf{HybridVAE + K-Means}   & \textbf{0.785} & \textbf{0.991} & 0.416 & \textbf{0.269} & 0.341 & \textbf{0.215} \\
+Hard (SS)  & CVAE + K-Means        & \textbf{0.726} & 0.004 & \textbf{0.603} & 0.052 & \textbf{0.657} & 0.037 \\
+Hard (ARI) & BetaVAE ($\beta\!=\!1$) + K-Means & 0.449 & 0.009 & 0.254 & 0.105 & 0.196 & 0.093 \\
 \midrule
-\rowcolor{gray!15} PCA baseline & PCA + K-Means & 0.102 & 0.155 & 0.002 & Mel (256-dim) \\
+\rowcolor{gray!15} PCA baseline & PCA + K-Means & 0.165 & 0.002 & 0.104 & 0.155 & 0.052 & 0.144 \\
 \bottomrule
 \end{tabular}
 \end{table}
