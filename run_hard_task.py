@@ -6,16 +6,15 @@
 This script runs the complete Hard task pipeline:
   1. Load combined audio features + lyrics embeddings + metadata
   2. Build condition vectors (language + genre one-hot) for CVAE
-  3. Train BetaVAE (beta=4) on audio features
-  4. Train CVAE conditioned on language + genre
+  3. Train BetaVAE (beta=1) on audio features
+  4. Train CVAE conditioned on language+genre (combined one-hot)
   5. Train MultiModalVAE on audio + lyrics
   6. Train Autoencoder baseline
-  7. K-Means clustering on all latent spaces
-  8. Direct spectral feature K-Means baseline
-  9. Evaluate ALL methods: Silhouette, NMI, ARI, Purity, DB, CH
- 10. Latent traversal visualizations (BetaVAE, dims 0–5)
- 11. Reconstruction examples for each model type
- 12. Full comparison table -> results/hard/
+  7. K-Means + Spectral clustering on all latent spaces
+  8. Evaluate ALL methods: Silhouette, NMI, ARI, Purity, DB, CH
+  9. Latent traversal visualizations (BetaVAE, dims 0–5)
+ 10. Reconstruction examples for each model type
+ 11. Full comparison table -> results/hard/
 
 Usage:
     python run_hard_task.py                        # synthetic fallback
@@ -168,27 +167,6 @@ class ConditionedDataset(torch.utils.data.Dataset):
             self, batch_size=batch_size, shuffle=shuffle, drop_last=False)
 
 
-def safe_evaluate(features, labels, ground_truth, method_name):
-    """Evaluate clustering, filtering DBSCAN noise if present."""
-    mask = labels != -1
-    if not np.all(mask):
-        n_noise = np.sum(~mask)
-        if np.sum(mask) < 10 or len(set(labels[mask])) < 2:
-            print(f"  Warning: {method_name} - too many noise points ({n_noise})")
-            return {
-                "method": method_name,
-                **{k: float("nan") for k in [
-                    "silhouette_score", "calinski_harabasz_index",
-                    "davies_bouldin_index", "adjusted_rand_index",
-                    "normalized_mutual_info", "cluster_purity"
-                ]},
-            }
-        features = features[mask]
-        ground_truth = ground_truth[mask] if ground_truth is not None else None
-        labels = labels[mask]
-    return evaluate_clustering(features, labels, labels_true=ground_truth,
-                               method_name=method_name)
-
 
 # ============================================================
 # Main
@@ -203,8 +181,8 @@ def main():
     parser.add_argument("--epochs", type=int, default=NUM_EPOCHS)
     parser.add_argument("--batch-size", type=int, default=BATCH_SIZE)
     parser.add_argument("--lr", type=float, default=LEARNING_RATE)
-    parser.add_argument("--beta", type=float, default=4.0,
-                        help="Beta value for BetaVAE (default: 4.0)")
+    parser.add_argument("--beta", type=float, default=1.0,
+                        help="Beta value for BetaVAE (default: 1.0, optimal from grid search)")
     parser.add_argument("--skip-umap", action="store_true")
     parser.add_argument("--skip-multimodal", action="store_true",
                         help="Skip MultiModalVAE (faster run)")
@@ -287,9 +265,9 @@ def main():
     # ===========================================================
     # STEP 3: Build Condition Vectors for CVAE
     # ===========================================================
-    print("\n[STEP 3] Building CVAE condition vectors (language only)...")
+    print("\n[STEP 3] Building CVAE condition vectors (language + genre)...")
     conditions, condition_dim, label_to_idx = build_condition_vectors(
-        metadata, condition_type="language")
+        metadata, condition_type="language_genre")
     print(f"  Condition dim: {condition_dim} | Classes: {label_to_idx}")
 
     # Datasets
@@ -428,12 +406,18 @@ def main():
         features_norm, n_components=latent_dim, n_clusters=n_clusters)
     direct_labels = direct_feature_kmeans(features_norm, n_clusters=n_clusters)
 
+    # Spectral clustering baseline — O(n²) memory, subsampled to 500
+    spectral_n = min(500, len(features_norm))
+    print(f"\n[STEP 9b-spectral] Spectral clustering on first {spectral_n} samples...")
+    spectral_labels = spectral_clustering_baseline(
+        features_norm[:spectral_n], n_clusters=n_clusters)
+
     mm_labels = None
     if mm_latent is not None:
         mm_labels = kmeans_clustering(mm_latent, n_clusters=n_clusters)
 
     # Optimal K analysis on best latent space
-    print("\n[STEP 9b] Optimal K analysis...")
+    print("\n[STEP 9c] Optimal K analysis...")
     best_latent_for_k = mm_latent if mm_latent is not None else cvae_latent
     optimal_k_result = find_optimal_k(best_latent_for_k, k_range=range(2, 25))
     print(f"  Optimal K by silhouette: {optimal_k_result['best_k']}")
@@ -469,6 +453,12 @@ def main():
     all_results.append(evaluate_clustering(
         features_norm, direct_labels, labels_true=ground_truth,
         method_name="Raw Features + K-Means (baseline)"))
+
+    # Spectral baseline evaluated on its subsample only
+    all_results.append(evaluate_clustering(
+        features_norm[:spectral_n], spectral_labels,
+        labels_true=ground_truth[:spectral_n],
+        method_name="Spectral Clustering (baseline, n=500)"))
 
     # GMM clustering on VAE latent spaces
     for name, lat in [
@@ -517,6 +507,18 @@ def main():
             lat[labeled_mask], lab[labeled_mask], labels_true=filtered_gt,
             method_name=name + " [labeled only]"))
 
+    # Spectral baseline — evaluate on the labeled subset of the 500-sample slice
+    spectral_labeled_mask = labeled_mask.values[:spectral_n]
+    if spectral_labeled_mask.sum() >= 10:
+        spectral_filtered_gt = encode_labels(
+            metadata.iloc[:spectral_n].loc[
+                metadata.iloc[:spectral_n]["genre"] != "untagged", "genre"])
+        filtered_results.append(evaluate_clustering(
+            features_norm[:spectral_n][spectral_labeled_mask],
+            spectral_labels[spectral_labeled_mask],
+            labels_true=spectral_filtered_gt,
+            method_name="Spectral Clustering (baseline, n=500) [labeled only]"))
+
     filtered_df = compare_methods(filtered_results)
     filtered_path = hard_dir / "filtered_methods_comparison.csv"
     filtered_df.to_csv(filtered_path)
@@ -533,6 +535,15 @@ def main():
         lang_results.append(evaluate_clustering(
             lat, lang_labels_k2, labels_true=lang_gt,
             method_name=name + " [K=2 language]"))
+
+    # Spectral K=2 language sanity check (subsample)
+    lang_gt_sub = encode_labels(metadata["language"].iloc[:spectral_n])
+    spectral_lang_labels = spectral_clustering_baseline(
+        features_norm[:spectral_n], n_clusters=2)
+    lang_results.append(evaluate_clustering(
+        features_norm[:spectral_n], spectral_lang_labels,
+        labels_true=lang_gt_sub,
+        method_name="Spectral Clustering (baseline, n=500) [K=2 language]"))
 
     lang_df = compare_methods(lang_results)
     lang_path = hard_dir / "language_clustering_comparison.csv"

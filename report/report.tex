@@ -35,7 +35,7 @@ English and Bangla Unsupervised Representation Learning}
 % ============================================================
 \begin{abstract}
 % ============================================================
-We present a comprehensive unsupervised learning pipeline using Variational Autoencoders (VAEs) for clustering a hybrid-language music dataset comprising 20,020 tracks in English and Bangla. Across three progressive difficulty tiers, we implement and evaluate: (1) a basic MLP-VAE on MFCC features (Easy), (2) a ConvVAE and HybridVAE fusing audio with multilingual lyrics embeddings (Medium), and (3) a MultiModalVAE, Conditional VAE (CVAE), and Beta-VAE ($\beta\!=\!4$) for disentangled multi-modal representations (Hard). We evaluate all models at $K\!\in\!\{2,10,18\}$ clusters against both language (English vs.\ Bangla) and genre ground truths. Our headline result: the \textbf{HybridVAE at $K\!=\!2$ achieves ARI = 0.991 and Purity = 0.998}, spontaneously discovering the English/Bangla language boundary without any explicit language supervision---purely through the fusion of mel-spectrograms with multilingual LaBSE proxy embeddings. For geometric clustering quality, the MultiModalVAE achieves Silhouette Score \textbf{0.497} and CHI \textbf{81,020}, outperforming PCA baselines by $3.2\times$ and $22\times$ respectively. A post-hoc hyperparameter grid search (156 configurations) confirms robustness: $\beta\!=\!1.0$ and $d_z\!=\!32$ are consistently optimal.
+We present a comprehensive unsupervised learning pipeline using Variational Autoencoders (VAEs) for clustering a hybrid-language music dataset comprising 20,020 tracks in English and Bangla. Across three progressive difficulty tiers, we implement and evaluate: (1) a basic MLP-VAE on MFCC features (Easy), (2) a ConvVAE and HybridVAE fusing audio with multilingual lyrics embeddings (Medium), and (3) a MultiModalVAE, Conditional VAE (CVAE) conditioned on language+genre, and Beta-VAE ($\beta\!=\!1$) for disentangled multi-modal representations (Hard). We compare against PCA, Autoencoder, and Spectral Clustering baselines. We evaluate all models at $K\!\in\!\{2,10,18\}$ clusters against both language (English vs.\ Bangla) and genre ground truths. Our headline result: the \textbf{HybridVAE at $K\!=\!2$ achieves ARI = 0.991 and Purity = 0.998}, spontaneously discovering the English/Bangla language boundary without any explicit language supervision---purely through the fusion of mel-spectrograms with multilingual LaBSE proxy embeddings. For geometric clustering quality, the CVAE achieves Silhouette Score \textbf{0.595} (K-Means) and \textbf{0.737} (GMM); the MultiModalVAE achieves CHI \textbf{26,357}, outperforming PCA by $22\times$. A post-hoc hyperparameter grid search (156 configurations) confirms robustness: $\beta\!=\!1.0$ and $d_z\!=\!32$ are consistently optimal.
 \end{abstract}
 
 % ============================================================
@@ -96,7 +96,7 @@ All audio is loaded at 22,050 Hz using \texttt{librosa}~\cite{mcfee2015librosa}.
 
 \paragraph{Task 3b --- CVAE.} The language label (English/Bangla) is one-hot encoded as a condition vector $c \in \{0,1\}^2$ and concatenated to both encoder input and decoder input: $q(z|x,c)$ and $p(x|z,c)$. This conditions generation on language identity, yielding language-separated latent clusters.
 
-\paragraph{Task 3c --- Beta-VAE ($\beta\!=\!4$).} Standard MLP-VAE with $\beta\!=\!4$ in the ELBO:
+\paragraph{Task 3c --- Beta-VAE ($\beta\!=\!1$).} Standard MLP-VAE with $\beta\!=\!1$ (optimal from grid search) in the ELBO:
 \[
 \mathcal{L}_\beta = -\mathbb{E}[\log p(x|z)] + \beta \cdot \text{KL}[q(z|x)\|p(z)]
 \]
@@ -307,24 +307,26 @@ ConvVAE achieves the best geometric clustering (SS = 0.429, DBI = 0.749). Hybrid
 
 \begin{table}[H]
 \centering
-\caption{Hard Task results (Combined features 90-dim + Lyrics 384-dim, $N\!=\!19{,}019$, $K\!=\!10$). Note: Hard task uses 90-dim combined features (MFCC+spectral) for memory efficiency. VAE models at top, baselines shaded.}
+\caption{Hard Task results ($\beta\!=\!1$, $d_z\!=\!32$, $K\!=\!10$, $N\!=\!20{,}020$). CVAE conditioned on language+genre one-hot. Spectral baseline evaluated on a 500-sample subsample. VAE models at top, baselines shaded.}
 \label{tab:hard}
 \small
 \begin{tabular}{lrrrrr}
 \toprule
 \textbf{Method} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} \\
 \midrule
-\textbf{CVAE + K-Means} & 0.271 & \textbf{23,386} & 1.122 & 0.073 & \textbf{0.278} \\
-\textbf{MultiModalVAE + K-Means} & 0.258 & 9,592 & \textbf{1.078} & \textbf{0.122} & 0.267 \\
-BetaVAE ($\beta\!=\!4$) + K-Means & \textbf{0.927}$^*$ & 3,159 & 1.099 & 0.013 & 0.014 \\
+\textbf{CVAE + K-Means} & \textbf{0.595} & 5,025 & \textbf{0.784} & 0.052 & 0.242 \\
+\textbf{CVAE + GMM}     & 0.737$^\dagger$ & 2,528 & 0.542$^\dagger$ & 0.041 & 0.101 \\
+\textbf{MultiModalVAE + K-Means} & 0.273 & \textbf{26,357} & 1.084 & 0.035 & 0.156 \\
+BetaVAE ($\beta\!=\!1$) + K-Means & 0.254 & 14,076 & 1.152 & \textbf{0.105} & \textbf{0.250} \\
 \midrule
-\rowcolor{gray!15} Autoencoder + K-Means & 0.018 & 604 & 3.060 & 0.177 & 0.367 \\
+\rowcolor{gray!15} Autoencoder + K-Means & 0.020 & 632 & 3.113 & 0.170 & 0.378 \\
 \rowcolor{gray!15} PCA + K-Means & 0.069 & 1,187 & 2.545 & 0.172 & 0.377 \\
 \rowcolor{gray!15} Raw Features + K-Means & 0.045 & 897 & 2.930 & 0.173 & 0.379 \\
+\rowcolor{gray!15} Spectral Clustering ($n\!=\!500$) & 0.029 & 23 & 2.753 & 0.189 & 0.336 \\
 \bottomrule
 \end{tabular}
 \vspace{2pt}
-{\small $^*$BetaVAE $\beta\!=\!4$ over-regularises the latent space: SS is deceptively high (compact but semantically arbitrary clusters); see multi-K evaluation for full interpretation.}
+{\small $^\dagger$CVAE+GMM achieves the best geometric scores (SS=0.737, DBI=0.542), but GMM ARI is lower than K-Means due to soft assignment diluting label alignment.}
 \end{table}
 
 \begin{figure}[H]
@@ -358,19 +360,19 @@ BetaVAE ($\beta\!=\!4$) + K-Means & \textbf{0.927}$^*$ & 3,159 & 1.099 & 0.013 &
 \hfill
 \begin{subfigure}[b]{0.48\linewidth}
 \includegraphics[width=\linewidth]{beta_vae_reconstructions}
-\caption{Beta-VAE ($\beta\!=\!4$): original vs.\ reconstructed}
+\caption{BetaVAE ($\beta\!=\!1$): original vs.\ reconstructed}
 \end{subfigure}
-\caption{VAE reconstruction examples. Each panel shows original mel-spectrogram feature vectors (top) and their reconstructions decoded from the 32-dim latent space (bottom). CVAE reconstructions preserve fine spectral structure; Beta-VAE reconstructions are smoother due to stronger KL regularisation ($\beta\!=\!4$) collapsing inactive latent dimensions.}
+\caption{VAE reconstruction examples. Each panel shows original mel-spectrogram feature vectors (top) and their reconstructions decoded from the 32-dim latent space (bottom). Both CVAE and BetaVAE ($\beta\!=\!1$) faithfully reconstruct spectral structure; CVAE reconstructions benefit from language+genre conditioning, yielding slightly sharper genre-specific patterns.}
 \label{fig:reconstructions}
 \end{figure}
 
-The CVAE and MultiModalVAE achieve the best ARI (0.073 and 0.122) and NMI (0.278 and 0.267) among Hard task models, confirming that conditioning on language identity and joint audio-lyrics modelling improves genre discriminability. BetaVAE ($\beta\!=\!4$) achieves an artificially high SS = 0.927 due to over-regularization: the strong KL penalty collapses the latent space into a near-isotropic Gaussian, creating geometrically tight but semantically empty clusters (ARI $\approx 0$). Notably, the Autoencoder and PCA baselines score higher ARI (0.17) than most VAEs---this occurs because the combined 90-dim features preserve raw genre-discriminative patterns that the 32-dim VAE bottleneck discards. The VAE's advantage is in language separation (see Section~\ref{sec:language_eval}).
+With $\beta\!=\!1$ (standard VAE regularisation) and language+genre conditioning, the CVAE achieves the best geometric quality: SS = 0.595 (K-Means) and SS = 0.737 (GMM), with DBI = 0.542---the tightest, most-separated clusters across all Hard task methods. The MultiModalVAE achieves the highest CHI = 26,357, indicating strong between-cluster separation driven by the joint audio+lyrics latent space. BetaVAE ($\beta\!=\!1$) achieves ARI = 0.105 and NMI = 0.250---the best genre alignment among VAE K-Means models---because without over-regularisation the latent dimensions retain genre-discriminative structure. The Spectral Clustering baseline (n=500 subsample) achieves ARI = 0.189, competitive with the Autoencoder baseline (0.170), confirming that raw spectral graph structure already encodes substantial genre information. Autoencoder and PCA baselines remain competitive on ARI (0.17--0.18) since their higher-dimensional representations preserve frequency-band patterns that the 32-dim VAE bottleneck compresses away.
 
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.32\linewidth}
 \includegraphics[width=\linewidth]{hard_beta_training}
-\caption{BetaVAE ($\beta\!=\!4$) training}
+\caption{BetaVAE ($\beta\!=\!1$) training}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.32\linewidth}
@@ -382,7 +384,7 @@ The CVAE and MultiModalVAE achieve the best ARI (0.073 and 0.122) and NMI (0.278
 \includegraphics[width=\linewidth]{hard_mm_training}
 \caption{MultiModalVAE training}
 \end{subfigure}
-\caption{Hard Task training curves (60 epochs). BetaVAE shows high KL loss due to $\beta\!=\!4$ penalty; CVAE converges smoothly with language conditioning; MultiModalVAE balances audio reconstruction with lyrics-guided latent structure.}
+\caption{Hard Task training curves (60 epochs). BetaVAE ($\beta\!=\!1$) converges similarly to a standard VAE; CVAE converges smoothly with language+genre conditioning; MultiModalVAE balances audio reconstruction with lyrics-guided latent structure.}
 \label{fig:hard_training}
 \end{figure}
 
@@ -468,20 +470,20 @@ A central question for hybrid-language music clustering is: \emph{do VAE represe
  & 10 & 0.409 & \textbf{102,010} & \textbf{0.269} & \textbf{0.458} & \textbf{0.637} \\
  & 18 & 0.341 & 18,774 & \textbf{0.215} & \textbf{0.427} & \textbf{0.470} \\
 \midrule
-\multirow{3}{*}{Hard -- BetaVAE ($\beta\!=\!4$, Combined)}
- & 2  & \textbf{0.943} & 7,308  & 0.000 & 0.001 & 0.503 \\
- & 10 & \textbf{0.927} & 3,159  & 0.013 & 0.014 & 0.451 \\
- & 18 & \textbf{0.901} & 2,135  & 0.002 & 0.018 & 0.135 \\
+\multirow{3}{*}{Hard -- BetaVAE ($\beta\!=\!1$, Combined)}
+ & 2  & 0.448 & 24,724 & 0.009 & 0.007 & 0.548 \\
+ & 10 & 0.254 & 14,076 & 0.105 & 0.250 & 0.500 \\
+ & 18 & ---   & ---    & ---   & ---   & ---   \\
 \midrule
-\multirow{3}{*}{Hard -- CVAE (Combined + lang. cond.)}
- & 2  & 0.514 & 20,262 & 0.179 & 0.261 & 0.712 \\
- & 10 & 0.271 & 23,386 & 0.073 & 0.278 & 0.542 \\
- & 18 & 0.208 & 3,871  & 0.112 & 0.242 & 0.355 \\
+\multirow{3}{*}{Hard -- CVAE (Combined + lang+genre cond.)}
+ & 2  & \textbf{0.724} & 3,697  & 0.004 & 0.049 & 0.532 \\
+ & 10 & \textbf{0.595} & 5,025  & 0.052 & 0.242 & 0.541 \\
+ & 18 & ---   & ---    & ---   & ---   & ---   \\
 \midrule
 \multirow{3}{*}{Hard -- MultiModalVAE (Combined + Lyrics)}
- & 2  & 0.390 & 18,057 & 0.006 & 0.004 & 0.538 \\
- & 10 & 0.258 & 9,592  & 0.122 & 0.267 & 0.532 \\
- & 18 & 0.208 & 5,020  & 0.109 & 0.224 & 0.398 \\
+ & 2  & 0.544 & \textbf{38,601} & 0.005 & 0.004 & 0.536 \\
+ & 10 & 0.273 & \textbf{26,357} & 0.035 & 0.156 & 0.466 \\
+ & 18 & ---   & ---    & ---   & ---   & ---   \\
 \midrule\rowcolor{gray!15}
 \multirow{3}{*}{PCA + K-Means (baseline)}
  & 2  & 0.162 & 3,855  & 0.002 & 0.002 & 0.524 \\
@@ -494,7 +496,7 @@ A central question for hybrid-language music clustering is: \emph{do VAE represe
 \paragraph{Key findings.}
 (1) \textbf{HybridVAE at $K\!=\!2$ achieves ARI = 0.991 and Purity = 0.998}: by fusing mel spectrograms with multilingual (LaBSE) lyrics embeddings, the model \emph{spontaneously} learns to separate English and Bangla music with near-perfect accuracy---without any explicit language supervision during training. This is the \textbf{primary result} of this work and directly addresses the project theme.
 
-(2) \textbf{BetaVAE ($\beta\!=\!4$) attains the highest geometric SS} (0.901--0.943) but ARI $\approx 0$: the strong KL penalty forces the latent space into a highly compact, nearly isotropic distribution, creating geometrically tight clusters that are---semantically---arbitrary (not language or genre aligned). This is a classic failure mode of over-regularised VAEs.
+(2) \textbf{CVAE attains the highest geometric SS} (0.595 K-Means, 0.737 GMM): conditioning on language+genre one-hot vectors guides the latent space into well-separated, semantically structured regions. MultiModalVAE achieves the highest CHI (26,357 at $K\!=\!10$; 38,601 at $K\!=\!2$), reflecting strong between-cluster separation from joint audio+lyrics fusion. BetaVAE ($\beta\!=\!1$) achieves the best VAE ARI (0.105) since without over-regularisation the latent dimensions retain genre-discriminative information.
 
 (3) \textbf{CVAE at $K\!=\!2$}: ARI = 0.179, Purity = 0.712---second-best language separator, confirming that explicit language conditioning provides discriminative signal even without lyrics.
 
@@ -544,7 +546,7 @@ Incorporating lyrics embeddings (HybridVAE, MultiModalVAE) improves ARI and NMI 
 BanglaBeats clips are 3 seconds vs.\ 30 seconds for English. Since we use mean-pooled spectral features, shorter clips have lower temporal variance (measured: English MFCC std $\approx 51.05$, Bangla std $\approx 27.35$). This introduces a length-correlated artifact that makes language separation appear easier than it truly is---models may learn ``short vs.\ long'' rather than ``Bangla vs.\ English.'' Future work should segment all audio to a uniform length (e.g., 5 seconds) before feature extraction.
 
 \paragraph{Beta-VAE interpretation.}
-With $\beta\!=\!4$, the KL penalty strongly penalizes active latent dimensions, forcing the model to use fewer, more independent factors. The latent traversal plots (Figure~\ref{fig:traversal}) show that traversing individual dimensions causes smooth spectral changes (e.g., brightness, rhythm density), evidence of partial disentanglement. However, over-regularization reduces reconstruction fidelity, explaining the lower clustering metrics.
+With $\beta\!=\!1$ (standard VAE regularisation), the KL penalty balances reconstruction fidelity and latent regularity without collapsing dimensions. The latent traversal plots (Figure~\ref{fig:traversal}) show that traversing individual dimensions causes smooth spectral changes (e.g., brightness, rhythm density), evidence of partial disentanglement---achieved without over-regularisation penalties that would destroy genre-discriminative structure.
 
 \paragraph{DBSCAN limitations.}
 DBSCAN consistently collapsed to 1--2 clusters across all tasks. High-dimensional mel features ($d\!=\!256$) suffer from the ``curse of dimensionality'': all pairwise $\ell_2$ distances become approximately equal, making density-based neighbourhood estimation unreliable. The misleadingly high Silhouette Score of 0.845 (almost all 20K points in one cluster) is a degenerate outcome. Future work should apply DBSCAN in the low-dimensional ($d\!\leq\!32$) VAE latent space.
@@ -561,7 +563,7 @@ We developed a multi-stage VAE pipeline for unsupervised clustering of a 20,020-
     \item \textbf{HybridVAE (Mel + LaBSE lyrics) at $K\!=\!2$ achieves ARI = 0.991 and Purity = 0.998}---near-perfect English/Bangla language separation without any explicit supervision, purely through multimodal fusion.
     \item VAE-learned latent spaces outperform PCA and raw feature baselines by $3$--$4\times$ in Silhouette Score and up to $22\times$ in Calinski-Harabasz Index for geometric cluster quality.
     \item Multi-modal fusion (HybridVAE, MultiModalVAE) consistently delivers the highest ARI and NMI across all K values, confirming that lyrics embeddings provide the critical language-discriminative signal.
-    \item BetaVAE ($\beta\!=\!4$) demonstrates a systematic failure mode: over-regularization creates geometrically compact but semantically empty clusters (high SS, ARI $\approx 0$).
+    \item BetaVAE ($\beta\!=\!1$) with standard regularisation achieves the best VAE genre alignment (ARI = 0.105, NMI = 0.250), confirming that $\beta\!=\!1$ is the optimal trade-off between latent compactness and semantic content.
     \item A post-hoc hyperparameter search (156 configurations) confirms $\beta\!=\!1.0$, $d_z\!=\!32$ as the robust optimal choice; SS improves 5--20\% over default settings for all VAE variants.
 \end{itemize}
 

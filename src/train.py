@@ -186,23 +186,6 @@ def extract_latent_features(model: BasicVAE,
     return np.concatenate(all_latent, axis=0)
 
 
-def load_trained_model(model_name: str = "basic_vae",
-                       device: torch.device = DEVICE) -> BasicVAE:
-    """Load a previously saved VAE model."""
-    load_path = MODELS_DIR / f"{model_name}.pt"
-    checkpoint = torch.load(load_path, map_location=device, weights_only=False)
-
-    model = BasicVAE(
-        input_dim=checkpoint["input_dim"],
-        latent_dim=checkpoint["latent_dim"],
-        hidden_dims=checkpoint["hidden_dims"],
-    )
-    model.load_state_dict(checkpoint["model_state_dict"])
-    model = model.to(device)
-    model.eval()
-    print(f"Loaded model from {load_path}")
-    return model
-
 
 # ============================================================
 # CVAE Training - Hard Task
