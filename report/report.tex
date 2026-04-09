@@ -188,16 +188,22 @@ Initial experiments used 500 synthesized audio clips to validate the pipeline. R
 
 \begin{table}[H]
 \centering
-\caption{Easy Task results (MFCC features, $N\!=\!20{,}020$, $K\!=\!10$).}
+\caption{Easy Task results (MFCC features, $N\!=\!20{,}020$). $K\!=\!2$ = language separation, $K\!=\!10$ = genre (all tracks), $K\!=\!18$ = genre (labeled only). \textbf{Bold} = best per column.}
 \label{tab:easy}
 \small
-\begin{tabular}{lrrrr}
+\begin{tabular}{llrrrrr}
 \toprule
-\textbf{Method} & \textbf{Silhouette $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{Improvement vs.\ PCA} \\
+\textbf{Method} & \textbf{$K$} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} \\
 \midrule
-\textbf{VAE + K-Means} & \textbf{0.4286} & \textbf{69,332} & \textbf{0.74} & $+307\%$ SS, $+4,264\%$ CHI \\
-PCA + K-Means & 0.1051 & 1,588 & 1.98 & baseline \\
-Raw Features + K-Means & 0.0974 & 1,462 & 2.11 & $-7\%$ SS \\
+\multirow{3}{*}{\textbf{BasicVAE + K-Means}}
+ & 2  & \textbf{0.594} & \textbf{28,503} & \textbf{0.552} & 0.001 & 0.001 \\
+ & 10 & \textbf{0.426} & \textbf{69,333} & \textbf{0.742} & 0.022 & 0.091 \\
+ & 18 & \textbf{0.427} & \textbf{59,662} & \textbf{0.773} & 0.053 & 0.137 \\
+\midrule
+\rowcolor{gray!15}\multirow{3}{*}{PCA + K-Means (baseline)}
+ & 2  & 0.165 & 3,855  & 1.426 & 0.002 & 0.002 \\
+ & 10 & 0.104 & 1,589  & 1.977 & \textbf{0.155} & \textbf{0.322} \\
+ & 18 & 0.052 & 580    & 2.451 & \textbf{0.144} & \textbf{0.253} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -239,19 +245,27 @@ The MLP-VAE achieves a Silhouette Score of 0.429, outperforming PCA by $4.1\time
 
 \begin{table}[H]
 \centering
-\caption{Medium Task results (Mel features, $N\!=\!20{,}019$, $K\!=\!10$). ARI/NMI/Purity evaluated against genre+language labels.}
+\caption{Medium Task results (Mel features, $N\!=\!20{,}019$). $K\!=\!2$ = language, $K\!=\!10$ = genre (all), $K\!=\!18$ = genre (labeled only). \textbf{Bold} = best per column per $K$.}
 \label{tab:medium}
 \small
-\begin{tabular}{lrrrrr}
+\begin{tabular}{llrrrrrr}
 \toprule
-\textbf{Method} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} \\
+\textbf{Method} & \textbf{$K$} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} & \textbf{Purity $\uparrow$} \\
 \midrule
-\textbf{ConvVAE + K-Means} & \textbf{0.4294} & \textbf{42,746} & \textbf{0.749} & 0.019 & 0.143 \\
-ConvVAE + Agglom. & 0.4220 & 36,537 & 0.780 & 0.019 & 0.145 \\
-\textbf{HybridVAE + K-Means} & 0.3769 & 28,250 & 0.859 & \textbf{0.209} & \textbf{0.384} \\
-HybridVAE + Agglom. & 0.3445 & 24,793 & 0.879 & 0.234 & 0.397 \\
-DBSCAN & 0.845 & 158 & 0.117 & $\approx\!0$ & $\approx\!0$ \\
-\rowcolor{gray!15} PCA + K-Means (baseline) & 0.154 & 3,649 & 1.721 & 0.137 & 0.350 \\
+\multirow{3}{*}{ConvVAE + K-Means}
+ & 2  & 0.652 & 26,902 & 0.634 & 0.055 & 0.105 & 0.618 \\
+ & 10 & \textbf{0.427} & 42,746 & \textbf{0.742} & 0.019 & 0.143 & 0.484 \\
+ & 18 & 0.323 & 22,757 & 0.904 & 0.046 & 0.118 & 0.259 \\
+\midrule
+\multirow{3}{*}{\textbf{HybridVAE + K-Means}}
+ & 2  & \textbf{0.785} & \textbf{152,367} & \textbf{0.381} & \textbf{0.991} & \textbf{0.978} & \textbf{0.998} \\
+ & 10 & 0.416 & \textbf{102,010} & 0.789 & \textbf{0.269} & \textbf{0.458} & \textbf{0.637} \\
+ & 18 & \textbf{0.341} & \textbf{18,774} & \textbf{0.837} & \textbf{0.215} & \textbf{0.427} & \textbf{0.470} \\
+\midrule
+\rowcolor{gray!15}\multirow{3}{*}{PCA + K-Means (baseline)}
+ & 2  & 0.165 & 3,855  & 1.426 & 0.002 & 0.002 & 0.524 \\
+ & 10 & 0.104 & 1,589  & 1.977 & 0.155 & 0.322 & 0.569 \\
+ & 18 & 0.052 & 580    & 2.451 & 0.144 & 0.253 & 0.411 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -307,22 +321,34 @@ ConvVAE achieves the best geometric clustering (SS = 0.429, DBI = 0.749). Hybrid
 
 \begin{table}[H]
 \centering
-\caption{Hard Task results ($\beta\!=\!1$, $d_z\!=\!32$, $K\!=\!10$, $N\!=\!20{,}020$). CVAE conditioned on language+genre one-hot. Spectral baseline evaluated on a 500-sample subsample. VAE models at top, baselines shaded.}
+\caption{Hard Task results ($\beta\!=\!1$, $d_z\!=\!32$, $N\!=\!20{,}020$). VAE models evaluated at $K\!\in\!\{2,10,18\}$; baselines at $K\!=\!10$ only. CVAE conditioned on language+genre one-hot. \textbf{Bold} = best among VAE models per column per $K$.}
 \label{tab:hard}
 \small
-\begin{tabular}{lrrrrr}
+\begin{tabular}{llrrrrr}
 \toprule
-\textbf{Method} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} \\
+\textbf{Method} & \textbf{$K$} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{DBI $\downarrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} \\
 \midrule
-\textbf{CVAE + K-Means} & \textbf{0.595} & 5,025 & \textbf{0.784} & 0.052 & 0.242 \\
-\textbf{CVAE + GMM}     & 0.737$^\dagger$ & 2,528 & 0.542$^\dagger$ & 0.041 & 0.101 \\
-\textbf{MultiModalVAE + K-Means} & 0.273 & \textbf{26,357} & 1.084 & 0.035 & 0.156 \\
-BetaVAE ($\beta\!=\!1$) + K-Means & 0.254 & 14,076 & 1.152 & \textbf{0.105} & \textbf{0.250} \\
+\multirow{3}{*}{\textbf{CVAE + K-Means}}
+ & 2  & \textbf{0.726} & 3,697  & \textbf{0.858} & 0.004 & 0.049 \\
+ & 10 & \textbf{0.603} & 5,025  & \textbf{0.784} & 0.052 & \textbf{0.242} \\
+ & 18 & \textbf{0.657} & 4,171  & \textbf{0.801} & 0.037 & \textbf{0.280} \\
 \midrule
-\rowcolor{gray!15} Autoencoder + K-Means & 0.020 & 632 & 3.113 & 0.170 & 0.378 \\
-\rowcolor{gray!15} PCA + K-Means & 0.069 & 1,187 & 2.545 & 0.172 & 0.377 \\
-\rowcolor{gray!15} Raw Features + K-Means & 0.045 & 897 & 2.930 & 0.173 & 0.379 \\
-\rowcolor{gray!15} Spectral Clustering ($n\!=\!500$) & 0.029 & 23 & 2.753 & 0.189 & 0.336 \\
+\multirow{3}{*}{MultiModalVAE + K-Means}
+ & 2  & 0.546 & \textbf{38,601} & 1.007 & 0.005 & 0.004 \\
+ & 10 & 0.276 & \textbf{26,357} & 1.084 & 0.035 & 0.156 \\
+ & 18 & 0.234 & \textbf{13,514} & 1.143 & 0.088 & 0.198 \\
+\midrule
+\multirow{3}{*}{BetaVAE ($\beta\!=\!1$) + K-Means}
+ & 2  & 0.449 & 24,724 & 1.014 & 0.009 & 0.007 \\
+ & 10 & 0.254 & 14,076 & 1.152 & \textbf{0.105} & 0.250 \\
+ & 18 & 0.196 & 7,470  & 1.307 & \textbf{0.093} & 0.210 \\
+\midrule
+\textbf{CVAE + GMM} & 10 & 0.737$^\dagger$ & 2,528 & 0.542$^\dagger$ & 0.041 & 0.101 \\
+\midrule
+\rowcolor{gray!15} Autoencoder + K-Means & 10 & 0.020 & 632 & 3.113 & 0.170 & 0.378 \\
+\rowcolor{gray!15} PCA + K-Means & 10 & 0.069 & 1,187 & 2.545 & 0.172 & 0.377 \\
+\rowcolor{gray!15} Raw Features + K-Means & 10 & 0.045 & 897 & 2.930 & 0.173 & 0.379 \\
+\rowcolor{gray!15} Spectral Clustering ($n\!=\!500$) & 10 & 0.029 & 23 & 2.753 & 0.189 & 0.336 \\
 \bottomrule
 \end{tabular}
 \vspace{2pt}
