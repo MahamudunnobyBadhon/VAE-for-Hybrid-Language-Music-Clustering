@@ -115,6 +115,29 @@ def main():
     ohe   = OneHotEncoder(sparse_output=False)
     conds = ohe.fit_transform(lang_enc.reshape(-1, 1)).astype(np.float32)
 
+    # Language+genre combined conditions for CVAE (condition_dim=22)
+    # Genre is derived from filenames the same way as run_hard_task.py
+    import re
+    def parse_genre(fn):
+        stem = Path(fn).stem.lower()
+        m = re.match(r"^bangla_(\w+)_\d+$", stem)
+        if m: return m.group(1)
+        m = re.match(r"^english_([a-z]+)_\1\.\d+", stem)
+        if m: return m.group(1)
+        m = re.match(r"^([a-z]+)\.\d+$", stem)
+        if m: return m.group(1)
+        if "magna" in stem: return "untagged"
+        return "unknown"
+
+    from sklearn.preprocessing import LabelEncoder as LE2
+    lang_col  = meta["language"].fillna("unknown").astype(str)
+    genre_col = meta["filename"].apply(parse_genre)
+    lang_genre_labels = lang_col + "_" + genre_col
+    le_lg = LE2(); lg_enc = le_lg.fit_transform(lang_genre_labels)
+    ohe_lg = OneHotEncoder(sparse_output=False)
+    conds_lg = ohe_lg.fit_transform(lg_enc.reshape(-1, 1)).astype(np.float32)
+    print(f"  CVAE condition_dim: {conds_lg.shape[1]} (language+genre combinations)")
+
     results = []
 
     def record(task, model_name, k, eval_type, m):
@@ -161,7 +184,7 @@ def main():
                     map_location="cpu", weights_only=False)
     m = BetaVAE(ck["input_dim"], ck["latent_dim"], ck["hidden_dims"])
     m.load_state_dict(ck["model_state_dict"])
-    eval_ks("Hard – BetaVAE (b=4)", "BetaVAE (Combined, d=90)", extract(m, comb_n))
+    eval_ks("Hard – BetaVAE (b=1)", "BetaVAE (Combined, d=90)", extract(m, comb_n))
 
     # ── 5. HARD: CVAE (Combined 90-dim + lang condition) ─────────────────────
     print("\n[HARD] CVAE on Combined + language condition")
@@ -169,7 +192,7 @@ def main():
                     map_location="cpu", weights_only=False)
     m = CVAE(ck["input_dim"], ck["latent_dim"], ck["condition_dim"], ck["hidden_dims"])
     m.load_state_dict(ck["model_state_dict"])
-    eval_ks("Hard – CVAE", "CVAE (Combined+Lang, d=90)", extract_cvae(m, comb_n, conds))
+    eval_ks("Hard – CVAE", "CVAE (Combined+LangGenre, d=90)", extract_cvae(m, comb_n, conds_lg))
 
     # ── 6. HARD: MultiModalVAE (Combined 90-dim + Lyrics 384-dim) ────────────
     print("\n[HARD] MultiModalVAE on Combined+Lyrics")
