@@ -349,6 +349,21 @@ BetaVAE ($\beta\!=\!4$) + K-Means & \textbf{0.927}$^*$ & 3,159 & 1.099 & 0.013 &
 \label{fig:traversal}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.48\linewidth}
+\includegraphics[width=\linewidth]{cvae_reconstructions}
+\caption{CVAE: original vs.\ reconstructed}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.48\linewidth}
+\includegraphics[width=\linewidth]{beta_vae_reconstructions}
+\caption{Beta-VAE ($\beta\!=\!4$): original vs.\ reconstructed}
+\end{subfigure}
+\caption{VAE reconstruction examples. Each panel shows original mel-spectrogram feature vectors (top) and their reconstructions decoded from the 32-dim latent space (bottom). CVAE reconstructions preserve fine spectral structure; Beta-VAE reconstructions are smoother due to stronger KL regularisation ($\beta\!=\!4$) collapsing inactive latent dimensions.}
+\label{fig:reconstructions}
+\end{figure}
+
 The CVAE and MultiModalVAE achieve the best ARI (0.073 and 0.122) and NMI (0.278 and 0.267) among Hard task models, confirming that conditioning on language identity and joint audio-lyrics modelling improves genre discriminability. BetaVAE ($\beta\!=\!4$) achieves an artificially high SS = 0.927 due to over-regularization: the strong KL penalty collapses the latent space into a near-isotropic Gaussian, creating geometrically tight but semantically empty clusters (ARI $\approx 0$). Notably, the Autoencoder and PCA baselines score higher ARI (0.17) than most VAEs---this occurs because the combined 90-dim features preserve raw genre-discriminative patterns that the 32-dim VAE bottleneck discards. The VAE's advantage is in language separation (see Section~\ref{sec:language_eval}).
 
 \begin{figure}[H]
