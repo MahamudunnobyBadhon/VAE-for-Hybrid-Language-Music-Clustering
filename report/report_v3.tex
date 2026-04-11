@@ -1138,7 +1138,7 @@ DBSCAN consistently collapsed to 1--2 clusters in high-dimensional mel features
 ($d\!=\!256$): the ``curse of dimensionality'' makes all pairwise $\ell_2$ distances
 approximately equal, invalidating density estimation. The deceptively high Silhouette
 Score (0.845 with almost all 20K points in one cluster) is a degenerate outcome.
-Future work should apply DBSCAN only in the low-dimensional ($d\!\leq\!32$) latent space.
+Future work should apply DBSCAN only in the low-dimensional ($d\!\leq\!32$) latent space, or adopt HDBSCAN~\cite{campello2013density} preceded by UMAP dimensionality reduction---the standard practice for density-based clustering in high dimensions.
 
 % ============================================================
 \section{Conclusion}
@@ -1180,7 +1180,7 @@ Key takeaways across all stages:
 \textbf{Future directions:}
 (1) Real Bangla lyric collection to validate genre-semantic embeddings;
 (2) Wav2vec2/CLAP audio encoders for language-agnostic acoustic features;
-(3) Uniform clip length normalisation (e.g., 5\,s) to fully eliminate the variance gap;
+(3) Extend the 3\,s center-window approach (proven in v2) to English tracks via overlapping windows, rather than padding Bangla clips to 5\,s which risks silence or loop artifacts;
 (4) Extension to Hindi, Tamil for broader South Asian multilingual coverage;
 (5) Self-supervised contrastive objectives to complement ELBO training.
 
