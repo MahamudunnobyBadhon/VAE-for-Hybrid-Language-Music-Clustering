@@ -54,7 +54,7 @@ def plot_tsne(features: np.ndarray,
     fig, ax = plt.subplots(figsize=FIG_SIZE)
     unique_labels = sorted(np.unique(labels))
 
-    cmap = plt.cm.get_cmap("tab10", len(unique_labels))
+    cmap = matplotlib.colormaps["tab10"].resampled(len(unique_labels))
     for idx, label in enumerate(unique_labels):
         mask = labels == label
         name = label_names[label] if label_names else str(label)
@@ -96,7 +96,7 @@ def plot_umap(features: np.ndarray,
 
     fig, ax = plt.subplots(figsize=FIG_SIZE)
     unique_labels = sorted(np.unique(labels))
-    cmap = plt.cm.get_cmap("tab10", len(unique_labels))
+    cmap = matplotlib.colormaps["tab10"].resampled(len(unique_labels))
 
     for idx, label in enumerate(unique_labels):
         mask = labels == label

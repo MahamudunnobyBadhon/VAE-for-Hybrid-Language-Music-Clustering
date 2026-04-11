@@ -29,41 +29,30 @@ from src.config import LYRICS_EMB_DIR, RANDOM_STATE
 # Genre-descriptive proxy text templates
 # ============================================================
 
-# English genre descriptions
-_ENGLISH_TEMPLATES = {
-    "blues":      "blues music with soulful guitar melodies and emotional lyrics about hardship",
-    "classical":  "classical orchestral music with rich harmonies and instrumental arrangements",
-    "country":    "country music with acoustic guitar storytelling and rural themes",
-    "disco":      "disco dance music with funky bass lines and upbeat rhythms",
-    "electronic": "electronic music with synthesizers beats and digital soundscapes",
-    "folk":       "folk music with acoustic instruments and traditional storytelling lyrics",
-    "hiphop":     "hip hop music with rhythmic rap verses and urban beats",
-    "jazz":       "jazz music with improvised melodies and complex chord progressions",
-    "metal":      "heavy metal music with distorted guitars and powerful percussion",
-    "pop":        "pop music with catchy melodies and modern production",
-    "reggae":     "reggae music with offbeat rhythms and social commentary lyrics",
-    "rock":       "rock music with electric guitars and energetic performances",
-    "misc":       "contemporary music with diverse instrumentation and vocal performances",
+# Language-neutral genre descriptions (same text for both English and Bangla tracks).
+# Using script-identical English text for all genres prevents LaBSE from separating
+# languages based on text script rather than musical content (label leakage fix).
+_GENRE_TEMPLATES = {
+    "blues":      "soulful string melodies with slow rhythm and expressive emotional phrasing",
+    "classical":  "orchestral composition with rich harmonic texture and instrumental arrangement",
+    "country":    "acoustic string instruments with narrative vocal delivery and rural themes",
+    "disco":      "dance music with prominent bass line and regular upbeat rhythmic pattern",
+    "electronic": "synthesized tones with programmed beats and layered digital sound design",
+    "folk":       "acoustic instruments with traditional melodic storytelling and simple structure",
+    "hiphop":     "rhythmic spoken vocal delivery over percussive beat with urban production",
+    "jazz":       "improvised melodic phrases over complex chord progressions with swing rhythm",
+    "metal":      "distorted string instruments with high tempo percussion and powerful dynamics",
+    "pop":        "catchy vocal melody with polished studio production and modern arrangement",
+    "reggae":     "offbeat rhythmic pattern with bass-heavy groove and syncopated percussion",
+    "rock":       "electric string instruments with energetic vocal and driving rhythmic section",
+    "devotional": "meditative spiritual vocal performance with reverent tone and gentle instrumentation",
+    "modern":     "contemporary melodic composition with polished production and clear vocal",
+    "untagged":   "instrumental composition with varied melodic and rhythmic elements",
+    "misc":       "musical composition with diverse instrumentation and vocal performance",
+    "unknown":    "musical composition with instrumentation and structured melodic content",
 }
 
-# Bangla genre descriptions
-_BANGLA_TEMPLATES = {
-    "classical":  "বাংলা শাস্ত্রীয় সংগীত ঐতিহ্যবাহী রাগ এবং তাল সহ",
-    "devotional": "ভক্তিমূলক বাংলা গান রবীন্দ্রনাথ নজরুলের ধর্মীয় ভাব সহ",
-    "folk":       "বাংলা লোকসংগীত বাউল ভাটিয়ালি মুর্শিদী সুর সহ",
-    "modern":     "আধুনিক বাংলা গান সমসাময়িক সুর এবং কথা সহ",
-    "rock":       "বাংলা রক সংগীত বৈদ্যুতিক গিটার এবং শক্তিশালী ছন্দ সহ",
-    "pop":        "বাংলা পপ সংগীত সুরেলা সুর এবং আধুনিক প্রযোজনা সহ",
-    "misc":       "বাংলা সংগীত বিভিন্ন বাদ্যযন্ত্র এবং কণ্ঠ পরিবেশনা সহ",
-}
-
-# Fallbacks when genre is unknown
-_FALLBACK = {
-    "english": "english song with contemporary music production and vocal performance",
-    "bangla":  "বাংলা গান আধুনিক সুর এবং কণ্ঠ পরিবেশনা সহ",
-    "bn":      "বাংলা গান আধুনিক সুর এবং কণ্ঠ পরিবেশনা সহ",
-    "en":      "english song with contemporary music production and vocal performance",
-}
+_FALLBACK_TEXT = "musical composition with instrumentation and structured melodic content"
 
 
 def _parse_genre_from_filename(filename: str, language: str) -> str:
@@ -128,11 +117,9 @@ def generate_proxy_lyrics(metadata: pd.DataFrame) -> list:
         else:
             genre = "misc"
 
-        # Select template
-        if lang in ("bangla", "bn"):
-            text = _BANGLA_TEMPLATES.get(genre, _FALLBACK.get("bangla"))
-        else:
-            text = _ENGLISH_TEMPLATES.get(genre, _FALLBACK.get("english"))
+        # Select language-neutral genre template (same English text for all languages
+        # to prevent LaBSE from leaking language identity via text script)
+        text = _GENRE_TEMPLATES.get(genre, _FALLBACK_TEXT)
 
         texts.append(text)
 
@@ -214,7 +201,7 @@ def _clean_genius_lyrics(text: str) -> str:
 # ============================================================
 
 def embed_lyrics_labse(texts: list,
-                        model_name: str = "LaBSE",
+                        model_name: str = "paraphrase-multilingual-MiniLM-L12-v2",
                         batch_size: int = 64,
                         normalize: bool = True) -> np.ndarray:
     """
@@ -223,9 +210,9 @@ def embed_lyrics_labse(texts: list,
     Args:
         texts: list of strings to embed
         model_name: sentence-transformers model name.
-                    "LaBSE" (1.9 GB, 768-dim) is recommended for Bangla+English.
                     "paraphrase-multilingual-MiniLM-L12-v2" (420 MB, 384-dim)
-                    is a lighter alternative.
+                    is the model used in this project.
+                    "LaBSE" (1.9 GB, 768-dim) is a heavier alternative.
         batch_size: number of texts per encoding batch
         normalize: L2-normalize embeddings (recommended for cosine similarity)
 
@@ -263,7 +250,7 @@ def extract_and_save_lyrics_embeddings(
         metadata: pd.DataFrame,
         genius_csv_path: str = None,
         embeddings_name: str = "lyrics_embeddings",
-        model_name: str = "LaBSE",
+        model_name: str = "paraphrase-multilingual-MiniLM-L12-v2",
         batch_size: int = 64,
 ) -> np.ndarray:
     """
@@ -279,7 +266,7 @@ def extract_and_save_lyrics_embeddings(
                   'filename' columns.
         genius_csv_path: optional path to the Genius CSV file.
         embeddings_name: filename stem for saved .npy file.
-        model_name: sentence-transformers model to use.
+        model_name: sentence-transformers model to use (default: MiniLM-L12-v2).
         batch_size: encoding batch size.
 
     Returns:
@@ -345,9 +332,8 @@ def _match_genius_lyrics(metadata: pd.DataFrame,
             # Pick a random lyric from the pool for this (language, genre)
             texts.append(rng.choice(lookup[key]))
         else:
-            # Fall back to proxy text
-            dummy_row = pd.Series({"language": lang_raw, "genre": genre})
-            texts.append(generate_proxy_lyrics(pd.DataFrame([dummy_row]))[0])
+            # Fall back to language-neutral genre proxy text
+            texts.append(_GENRE_TEMPLATES.get(genre, _FALLBACK_TEXT))
 
     return texts
 

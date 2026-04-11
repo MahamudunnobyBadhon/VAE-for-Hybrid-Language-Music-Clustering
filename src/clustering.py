@@ -33,13 +33,13 @@ def kmeans_clustering(features: np.ndarray,
         cluster_labels: (n_samples,)
     """
     kmeans = KMeans(n_clusters=n_clusters, random_state=random_state,
-                    n_init=10, max_iter=300)
+                    n_init=30, max_iter=500)
     labels = kmeans.fit_predict(features)
     return labels
 
 
 def pca_kmeans_baseline(features: np.ndarray,
-                        n_components: int = 2,
+                        n_components: int = 32,
                         n_clusters: int = N_CLUSTERS,
                         random_state: int = RANDOM_STATE) -> tuple:
     """
@@ -59,7 +59,7 @@ def pca_kmeans_baseline(features: np.ndarray,
     pca_features = pca.fit_transform(features)
 
     kmeans = KMeans(n_clusters=n_clusters, random_state=random_state,
-                    n_init=10, max_iter=300)
+                    n_init=30, max_iter=500)
     labels = kmeans.fit_predict(pca_features)
 
     explained_var = sum(pca.explained_variance_ratio_) * 100
@@ -92,7 +92,7 @@ def find_optimal_k(features: np.ndarray,
 
     for k in k_range:
         kmeans = KMeans(n_clusters=k, random_state=random_state,
-                        n_init=10, max_iter=300)
+                        n_init=30, max_iter=500)
         labels = kmeans.fit_predict(features)
         inertias.append(kmeans.inertia_)
         sil_score = silhouette_score(features, labels)
@@ -130,7 +130,7 @@ def gmm_clustering(features: np.ndarray,
     gmm = GaussianMixture(n_components=n_clusters,
                            covariance_type="full",
                            random_state=random_state,
-                           n_init=5, max_iter=300)
+                           n_init=10, max_iter=500)
     return gmm.fit_predict(features)
 
 

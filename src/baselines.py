@@ -227,30 +227,42 @@ def extract_ae_latent(model: Autoencoder,
 def spectral_clustering_baseline(features: np.ndarray,
                                   n_clusters: int = N_CLUSTERS,
                                   n_neighbors: int = 10,
+                                  max_samples: int = 500,
                                   random_state: int = RANDOM_STATE) -> np.ndarray:
     """
     Spectral Clustering on raw features — "direct spectral feature clustering" baseline.
 
     Uses nearest-neighbour affinity graph construction. Note: expensive on
-    large datasets (O(n²) memory for the affinity matrix). Auto-subsamples
-    to 500 samples if n_samples > 500 to avoid memory issues.
+    large datasets (O(n²) memory for the affinity matrix). Randomly subsamples
+    to max_samples if n_samples > max_samples to avoid memory issues.
+
+    Returns labels for the FULL dataset: subsampled points are clustered with
+    SpectralClustering; remaining points are assigned to the nearest subsampled
+    centroid using K-Means on the same reduced features.
 
     Args:
         features: (n_samples, n_features)
         n_clusters: number of clusters
         n_neighbors: number of neighbours for affinity graph
+        max_samples: maximum samples to use for spectral clustering (default 500)
         random_state: random seed
 
     Returns:
-        cluster_labels: (n_samples,)
+        cluster_labels: (n_samples,) labels for all input samples
     """
-    from sklearn.cluster import SpectralClustering
+    from sklearn.cluster import SpectralClustering, KMeans
 
     n_samples = len(features)
-    if n_samples > 500:
-        print(f"  Warning: Spectral clustering on {n_samples} samples may be slow. "
-              "Using first 500 samples.")
-        features = features[:500]
+    rng = np.random.RandomState(random_state)
+
+    if n_samples > max_samples:
+        print(f"  Note: Spectral clustering subsampling {n_samples} → {max_samples} "
+              f"samples (O(n²) memory constraint).")
+        idx = rng.choice(n_samples, size=max_samples, replace=False)
+        sub_features = features[idx]
+    else:
+        idx = np.arange(n_samples)
+        sub_features = features
 
     sc = SpectralClustering(
         n_clusters=n_clusters,
@@ -259,9 +271,24 @@ def spectral_clustering_baseline(features: np.ndarray,
         random_state=random_state,
         n_jobs=-1,
     )
-    labels = sc.fit_predict(features)
-    print(f"  Spectral clustering: {len(set(labels))} clusters found")
-    return labels
+    sub_labels = sc.fit_predict(sub_features)
+    print(f"  Spectral clustering: {len(set(sub_labels))} clusters on {len(sub_features)} samples")
+
+    if n_samples <= max_samples:
+        return sub_labels
+
+    # Assign remaining points by nearest centroid (KMeans on full data, initialised
+    # from spectral cluster centres)
+    centroids = np.array([
+        sub_features[sub_labels == k].mean(axis=0)
+        for k in range(n_clusters)
+        if (sub_labels == k).any()
+    ])
+    km = KMeans(n_clusters=len(centroids), init=centroids, n_init=1,
+                max_iter=300, random_state=random_state)
+    all_labels = km.fit_predict(features)
+    print(f"  Full-dataset assignment via nearest centroid: shape={all_labels.shape}")
+    return all_labels
 
 
 # ============================================================

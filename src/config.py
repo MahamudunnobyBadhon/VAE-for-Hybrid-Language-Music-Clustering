@@ -32,6 +32,7 @@ for d in [
     AUDIO_ENGLISH_DIR, AUDIO_BANGLA_DIR, LYRICS_DIR,
     MFCC_DIR, MEL_SPEC_DIR, LYRICS_EMB_DIR,
     LATENT_VIS_DIR, CLUSTER_PLOTS_DIR, RECONSTRUCTIONS_DIR, MODELS_DIR,
+    RESULTS_DIR / "clustering_metrics",
 ]:
     d.mkdir(parents=True, exist_ok=True)
 

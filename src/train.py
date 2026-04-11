@@ -9,6 +9,7 @@ Handles:
   - Model saving/loading
 """
 
+import copy
 import torch
 import torch.optim as optim
 import numpy as np
@@ -130,7 +131,7 @@ def train_vae(model: BasicVAE,
         if avg_total < best_loss:
             best_loss = avg_total
             patience_counter = 0
-            best_model_state = model.state_dict().copy()
+            best_model_state = copy.deepcopy(model.state_dict())
         else:
             patience_counter += 1
             if patience_counter >= patience:
@@ -184,7 +185,6 @@ def extract_latent_features(model: BasicVAE,
         all_latent.append(mu.cpu().numpy())
 
     return np.concatenate(all_latent, axis=0)
-
 
 
 # ============================================================

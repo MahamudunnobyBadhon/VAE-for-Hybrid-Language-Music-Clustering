@@ -1,0 +1,97 @@
+model,eval_type,k,method,silhouette_score,calinski_harabasz_index,davies_bouldin_index,adjusted_rand_index,normalized_mutual_info,cluster_purity,method_error
+Easy-BasicVAE,language,2,KMeans,0.5980445742607117,28502.702915222893,0.6215286451277229,0.0005819846719574571,0.0007794777217913396,0.5124132074529197,
+Easy-BasicVAE,language,2,GMM,0.5153961181640625,24246.94837485813,0.7017022037483626,1.1123589847914586e-05,4.8434857013804016e-05,0.5038213696987861,
+Easy-BasicVAE,language,2,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Easy-BasicVAE,language,2,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Easy-BasicVAE,genre_all,10,KMeans,0.4285750389099121,69332.78008465905,0.6362771057276427,0.021653333429444088,0.09067828177162182,0.44957290573954745,
+Easy-BasicVAE,genre_all,10,GMM,0.02740551345050335,9938.54913617303,2.2261419203270263,0.15752919149736297,0.29879451719451955,0.540986063239922,
+Easy-BasicVAE,genre_all,10,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Easy-BasicVAE,genre_all,10,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Easy-BasicVAE,genre_labeled,18,KMeans,0.42803892493247986,59683.01640963661,0.6393280168261954,0.05331849197018107,0.13703818037646257,0.26681187040566295,
+Easy-BasicVAE,genre_labeled,18,GMM,0.03597167134284973,6663.193943452636,3.711890926039887,0.1507480707297836,0.21282224884665715,0.3625555858063345,
+Easy-BasicVAE,genre_labeled,18,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Easy-BasicVAE,genre_labeled,18,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-ConvVAE,language,2,KMeans,0.6554399728775024,26902.396077611185,0.6181699243648926,0.0552126268239378,0.10526245165646998,0.6175133623058094,
+Medium-ConvVAE,language,2,GMM,0.5371363162994385,17616.201292603655,0.8140676094327038,0.06929606193040583,0.09359430865202409,0.6316499325640641,
+Medium-ConvVAE,language,2,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-ConvVAE,language,2,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-ConvVAE,genre_all,10,KMeans,0.42937183380126953,42746.06204971801,0.7486887338673617,0.019324409146946223,0.1426891274253371,0.4839902093011639,
+Medium-ConvVAE,genre_all,10,GMM,-0.0475623719394207,7965.287697336422,6.08676716069637,0.08320033620498118,0.22138792758687537,0.5371397172685949,
+Medium-ConvVAE,genre_all,10,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-ConvVAE,genre_all,10,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-ConvVAE,genre_labeled,18,KMeans,0.32223886251449585,22792.558763025776,0.8234532423741863,0.04503669724545545,0.11828209022085544,0.2605499591614484,
+Medium-ConvVAE,genre_labeled,18,GMM,-0.12573541700839996,2782.1229358700602,4.828321644622586,0.09774451108003938,0.18306666769555777,0.3321535529539886,
+Medium-ConvVAE,genre_labeled,18,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-ConvVAE,genre_labeled,18,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-HybridVAE,language,2,KMeans,0.7882142066955566,152367.09666213262,0.2928637162998492,0.9912272370907742,0.9776398344911679,0.9978020880163845,
+Medium-HybridVAE,language,2,GMM,0.7869948148727417,148107.3244089115,0.2942601786096527,1.0,1.0,1.0,
+Medium-HybridVAE,language,2,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-HybridVAE,language,2,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-HybridVAE,genre_all,10,KMeans,0.41848212480545044,102012.2396540028,0.7345908289190353,0.270325434214811,0.4575161524317374,0.6376442379739248,
+Medium-HybridVAE,genre_all,10,GMM,0.3870667517185211,76531.12695337486,0.7759379955844683,0.3318847848194771,0.49892420388568065,0.6604725510764774,
+Medium-HybridVAE,genre_all,10,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-HybridVAE,genre_all,10,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-HybridVAE,genre_labeled,18,KMeans,0.3355371952056885,18815.161282827477,0.8316472338591834,0.19866838503953987,0.4010402430704741,0.4614756329975497,
+Medium-HybridVAE,genre_labeled,18,GMM,0.28834351897239685,14737.37601859708,0.8864662394779038,0.2687252781357895,0.4729093609183086,0.48688628732189854,
+Medium-HybridVAE,genre_labeled,18,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Medium-HybridVAE,genre_labeled,18,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-BetaVAE,language,2,KMeans,0.44793424010276794,24723.812220301104,0.8164725663684982,0.009351429203168171,0.0068144341110168765,0.5484789450022479,
+Hard-BetaVAE,language,2,GMM,0.4387158453464508,23854.666947885456,0.829684090891977,0.008206720630007472,0.005968722163441364,0.5454318397522354,
+Hard-BetaVAE,language,2,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-BetaVAE,language,2,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-BetaVAE,genre_all,10,KMeans,0.2536124289035797,14076.911552036025,1.1493567016740023,0.10142462965833976,0.24794549012288924,0.4985763524651581,
+Hard-BetaVAE,genre_all,10,GMM,0.14737555384635925,7784.304357201543,1.5076004815843225,0.13803814540045645,0.29837615790913063,0.5481292771866727,
+Hard-BetaVAE,genre_all,10,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-BetaVAE,genre_all,10,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-BetaVAE,genre_labeled,18,KMeans,0.1979575902223587,7470.32174162104,1.3019006020891346,0.09261641664656198,0.20966291285294678,0.3739903802522915,
+Hard-BetaVAE,genre_labeled,18,GMM,0.19392134249210358,6947.222151405573,1.3274371840339394,0.09788565075002022,0.2112342980353906,0.37299210454669207,
+Hard-BetaVAE,genre_labeled,18,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-BetaVAE,genre_labeled,18,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-CVAE,language,2,KMeans,0.723643958568573,3696.954404406595,1.147285058657714,0.0040235118429315766,0.04864109805933755,0.5317448423997203,
+Hard-CVAE,language,2,GMM,0.806281328201294,468.492445097268,4.15845164286311,0.0010725567687808132,0.02655240555182162,0.5164094110594935,
+Hard-CVAE,language,2,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-CVAE,language,2,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-CVAE,genre_all,10,KMeans,0.5968388915061951,5043.106184783784,0.8862266919620916,0.0533179867974991,0.24532690667939794,0.5427344023177981,
+Hard-CVAE,genre_all,10,GMM,0.736880898475647,2528.1970495099977,0.5420632336623981,0.04124236610204207,0.10083822264448104,0.48873570108397024,
+Hard-CVAE,genre_all,10,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-CVAE,genre_all,10,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-CVAE,genre_labeled,18,KMeans,0.6535240411758423,4249.539244581041,0.6025170343672439,0.03740973228435259,0.2778316387374242,0.3502132679916508,
+Hard-CVAE,genre_labeled,18,GMM,0.6592579483985901,1480.7243942380783,0.5641678021084691,0.0022987842546458555,0.12531562235581903,0.20056266448861057,
+Hard-CVAE,genre_labeled,18,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-CVAE,genre_labeled,18,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-MultiModalVAE,language,2,KMeans,0.5438949465751648,38600.86619673847,0.6302971674133082,0.00500330980914881,0.003669970763680896,0.5355412358259654,
+Hard-MultiModalVAE,language,2,GMM,0.525460958480835,36007.73586759752,0.6468913819936439,0.003855971137893284,0.0028600436714138525,0.5312453169488985,
+Hard-MultiModalVAE,language,2,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-MultiModalVAE,language,2,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-MultiModalVAE,genre_all,10,KMeans,0.27331310510635376,26356.53786568017,1.0837853507603352,0.03526626798168201,0.1564124692624227,0.4657575303461711,
+Hard-MultiModalVAE,genre_all,10,GMM,0.1697058081626892,15607.504287189662,1.4628856690113532,0.07536451630566003,0.25194836749602423,0.49952545082171934,
+Hard-MultiModalVAE,genre_all,10,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-MultiModalVAE,genre_all,10,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-MultiModalVAE,genre_labeled,18,KMeans,0.2318473607301712,13513.546450371583,1.1330394792965197,0.08765205303347444,0.1983325025592183,0.34867047826481534,
+Hard-MultiModalVAE,genre_labeled,18,GMM,0.18594945967197418,10985.02772671011,1.2500706288211427,0.10465461712763914,0.20910765394744504,0.3611035484163717,
+Hard-MultiModalVAE,genre_labeled,18,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Hard-MultiModalVAE,genre_labeled,18,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-mel,language,2,KMeans,0.29262804985046387,8632.143703450838,1.4189700132251428,0.131516398425813,0.11495467265530684,0.6813527149208252,
+Baseline-PCA32-mel,language,2,GMM,0.16351087391376495,4076.5035985224567,2.0818958173895195,0.03238211439608968,0.024937324255396992,0.5900394625106149,
+Baseline-PCA32-mel,language,2,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-mel,language,2,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-mel,genre_all,10,KMeans,0.15507647395133972,3649.8275228524985,1.7300698607910676,0.14191693966095292,0.35096255532352777,0.579599380588441,
+Baseline-PCA32-mel,genre_all,10,GMM,0.011326112784445286,1596.1462588966926,3.677880982310891,0.22359987638573606,0.4620903810816221,0.6512812827813577,
+Baseline-PCA32-mel,genre_all,10,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-mel,genre_all,10,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-mel,genre_labeled,18,KMeans,0.08392901718616486,1074.0282969418292,2.1334726948149805,0.10952928644784761,0.19444384607701024,0.3494872492966694,
+Baseline-PCA32-mel,genre_labeled,18,GMM,-0.05457691848278046,401.6789770367983,4.565540450743928,0.16588797709843858,0.28903433844753335,0.4513113712678101,
+Baseline-PCA32-mel,genre_labeled,18,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-mel,genre_labeled,18,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-combined,language,2,KMeans,0.13640372455120087,3374.504134492014,2.365052484129958,0.001100597745165535,0.0008298033571094751,0.5169588890553973,
+Baseline-PCA32-combined,language,2,GMM,0.10096585750579834,2222.9619113137005,2.8893557679393824,0.028475155682159737,0.020681409558220423,0.5844447774614117,
+Baseline-PCA32-combined,language,2,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-combined,language,2,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-combined,genre_all,10,KMeans,0.06933262944221497,1187.144271845449,2.5441732833746054,0.1717947604423049,0.3764389970096702,0.6159648334082621,
+Baseline-PCA32-combined,genre_all,10,GMM,0.010476252995431423,832.0195313121112,3.2947407234579296,0.2376593929333793,0.4331491772043744,0.6634197512363255,
+Baseline-PCA32-combined,genre_all,10,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-combined,genre_all,10,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-combined,genre_labeled,18,KMeans,0.04228179156780243,422.9998393682479,2.657481406494073,0.14335827795643857,0.24612465285461194,0.42027407205735545,
+Baseline-PCA32-combined,genre_labeled,18,GMM,-0.0010990607552230358,280.67511795817626,3.4049891755081583,0.14734562909865492,0.2518725914043902,0.3945911607223886,
+Baseline-PCA32-combined,genre_labeled,18,AgglomerativeWard,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory
+Baseline-PCA32-combined,genre_labeled,18,AgglomerativeComplete,,,,,,,Agglomerative skipped for n>8000 to avoid O(n^2) runtime/memory

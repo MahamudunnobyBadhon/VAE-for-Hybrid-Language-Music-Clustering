@@ -1,0 +1,55 @@
+
+Found 1 checkpoint(s): ['CVAE']
+[LOAD] Loading v2 features...
+  N=20019  mfcc:(20019, 40)  mel:(20019, 256)  comb:(20019, 90)  lyrics:(20019, 384)  cond_dim=22
+
+============================================================
+[CLUSTERING] Exhaustive clustering on available models
+============================================================
+
+  Loading cvae_hard_v2.pt ...
+  Hard-CVAE                    K= 2 [language      ]  SS=0.865  ARI=0.000  NMI=0.008  method=Agglom-Ward
+  Hard-CVAE                    K=10 [genre_all     ]  SS=0.645  ARI=0.054  NMI=0.130  method=GMM
+  Hard-CVAE                    K=18 [genre_labeled ]  SS=0.529  ARI=0.005  NMI=0.167  method=GMM
+
+Leaderboard updated -> C:\Users\ASUS VivoBook\msc\CSE715\project\results\v2\leaderboard_v2.csv  (3 new rows)
+
+============================================================
+[FINETUNE] Quick grid: beta={1.0,2.0} x latent_dim=32 x 30 epochs
+============================================================
+
+  Finetuning CVAE ...
+
+============================================================
+ Training qft_CVAE_b1.0_v2 (CVAE) on cpu
+ Epochs: 30, LR: 0.001, KL Weight: 1.0
+============================================================
+
+  Epoch   1/30 | Total: 0.9806 | Recon: 0.8876 | KL: 0.8366 | beta: 0.111 | LR: 1.0e-03
+  Epoch  10/30 | Total: 0.8580 | Recon: 0.8577 | KL: 0.0003 | beta: 1.000 | LR: 1.0e-03
+  Epoch  20/30 | Total: 0.8531 | Recon: 0.8531 | KL: 0.0000 | beta: 1.000 | LR: 1.0e-03
+  Epoch  30/30 | Total: 0.8512 | Recon: 0.8512 | KL: 0.0000 | beta: 1.000 | LR: 1.0e-03
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\qft_CVAE_b1.0_v2.pt
+  qft CVAE            b=1.0 ld=32 K= 2 [language      ]  SS=0.854  ARI=0.000
+  qft CVAE            b=1.0 ld=32 K=10 [genre_all     ]  SS=0.486  ARI=0.003
+  qft CVAE            b=1.0 ld=32 K=18 [genre_labeled ]  SS=0.508  ARI=0.010
+
+============================================================
+ Training qft_CVAE_b2.0_v2 (CVAE) on cpu
+ Epochs: 30, LR: 0.001, KL Weight: 2.0
+============================================================
+
+  Epoch   1/30 | Total: 1.0302 | Recon: 0.9316 | KL: 0.4437 | beta: 0.222 | LR: 1.0e-03
+  Epoch  10/30 | Total: 0.8586 | Recon: 0.8581 | KL: 0.0002 | beta: 2.000 | LR: 1.0e-03
+  Epoch  20/30 | Total: 0.8531 | Recon: 0.8531 | KL: 0.0000 | beta: 2.000 | LR: 1.0e-03
+  Epoch  30/30 | Total: 0.8510 | Recon: 0.8510 | KL: 0.0000 | beta: 2.000 | LR: 1.0e-03
+
+  Model saved to C:\Users\ASUS VivoBook\msc\CSE715\project\results\models\qft_CVAE_b2.0_v2.pt
+  qft CVAE            b=2.0 ld=32 K= 2 [language      ]  SS=0.891  ARI=0.000
+  qft CVAE            b=2.0 ld=32 K=10 [genre_all     ]  SS=0.784  ARI=0.009
+  qft CVAE            b=2.0 ld=32 K=18 [genre_labeled ]  SS=0.754  ARI=0.000
+
+Finetune results saved -> C:\Users\ASUS VivoBook\msc\CSE715\project\results\v2\finetune_quick_v2.csv  (6 new rows)
+
+DONE.

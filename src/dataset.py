@@ -391,33 +391,3 @@ def load_lyrics_embeddings(embeddings_name: str = "lyrics_embeddings") -> np.nda
     return embeddings.astype(np.float32)
 
 
-def create_hybrid_features(audio_features: np.ndarray,
-                            lyrics_embeddings: np.ndarray,
-                            audio_weight: float = 0.7,
-                            lyrics_weight: float = 0.3) -> np.ndarray:
-    """
-    Create a hybrid feature vector by weighted, normalized concatenation.
-
-    Each modality is independently StandardScaler-normalized and then
-    scaled by its weight before concatenation. This prevents the
-    high-dimensional lyrics embeddings from dominating the audio features.
-
-    Args:
-        audio_features: (n_samples, audio_dim)
-        lyrics_embeddings: (n_samples, lyrics_dim)
-        audio_weight: scaling factor applied after normalizing audio (default 0.7)
-        lyrics_weight: scaling factor applied after normalizing lyrics (default 0.3)
-
-    Returns:
-        np.ndarray of shape (n_samples, audio_dim + lyrics_dim), float32
-    """
-    from sklearn.preprocessing import StandardScaler
-
-    scaler_a = StandardScaler()
-    scaler_l = StandardScaler()
-
-    audio_norm = scaler_a.fit_transform(audio_features) * audio_weight
-    lyrics_norm = scaler_l.fit_transform(lyrics_embeddings) * lyrics_weight
-
-    hybrid = np.concatenate([audio_norm, lyrics_norm], axis=1)
-    return hybrid.astype(np.float32)
