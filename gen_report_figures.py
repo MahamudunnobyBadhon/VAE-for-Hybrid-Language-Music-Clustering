@@ -24,7 +24,7 @@ x = np.arange(len(models))
 w = 0.25
 cols = ['#2196F3', '#4CAF50', '#FF9800']
 
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 fig.suptitle('Multi-K Evaluation: K=2 (Language), K=10 (All Genres), K=18 (Labeled Genres)',
              fontsize=12, fontweight='bold')
 
@@ -32,7 +32,7 @@ ax = axes[0]
 ax.bar(x - w, ari_k2,  w, label='K=2 (language)',        color=cols[0], alpha=0.85)
 ax.bar(x,     ari_k10, w, label='K=10 (genre, all)',      color=cols[1], alpha=0.85)
 ax.bar(x + w, ari_k18, w, label='K=18 (genre, labeled)',  color=cols[2], alpha=0.85)
-ax.set_xticks(x); ax.set_xticklabels(models, fontsize=9)
+ax.set_xticks(x); ax.set_xticklabels(models, fontsize=9, rotation=30, ha='right')
 ax.set_ylabel('Adjusted Rand Index (ARI)'); ax.set_title('ARI by Model and K')
 ax.legend(fontsize=9); ax.set_ylim(0, 1.1)
 ax.annotate('ARI=0.991\n(near-perfect\nlanguage sep.)',
@@ -44,7 +44,7 @@ ax = axes[1]
 ax.bar(x - w, ss_k2,  w, label='K=2 (language)',        color=cols[0], alpha=0.85)
 ax.bar(x,     ss_k10, w, label='K=10 (genre, all)',      color=cols[1], alpha=0.85)
 ax.bar(x + w, ss_k18, w, label='K=18 (genre, labeled)',  color=cols[2], alpha=0.85)
-ax.set_xticks(x); ax.set_xticklabels(models, fontsize=9)
+ax.set_xticks(x); ax.set_xticklabels(models, fontsize=9, rotation=30, ha='right')
 ax.set_ylabel('Silhouette Score'); ax.set_title('Silhouette Score by Model and K')
 ax.legend(fontsize=9); ax.set_ylim(0, 1.1)
 ax.annotate('SS=0.943\n(over-reg., NOT\nmeaningful)',
@@ -52,8 +52,8 @@ ax.annotate('SS=0.943\n(over-reg., NOT\nmeaningful)',
             arrowprops=dict(arrowstyle='->', color='darkred', lw=1.5),
             fontsize=8, color='darkred', ha='center')
 
-plt.tight_layout()
-plt.savefig(f'{FIG}/multi_k_comparison.png', dpi=150, bbox_inches='tight')
+plt.tight_layout(pad=1.5)
+plt.savefig(f'{FIG}/multi_k_comparison.png', dpi=200, bbox_inches='tight')
 plt.close()
 print("Saved multi_k_comparison.png")
 
@@ -146,12 +146,15 @@ for i, (label, color) in enumerate(steps):
 ax.text(0.5, 0.93, 'Dataset Construction and Full Pipeline Overview',
         ha='center', va='center', fontsize=12, fontweight='bold',
         transform=ax.transAxes)
-ax.text(0.5, 0.06, 'Total: 20,020 tracks  |  English: 10,000 (GTZAN + MagnaTagATune)  |  Bangla: 10,020 (BanglaBeats)',
-        ha='center', va='center', fontsize=9, color='#333',
+ax.text(0.5, 0.07, 'Total: 20,020 tracks',
+        ha='center', va='center', fontsize=10, color='#333', fontweight='bold',
+        transform=ax.transAxes)
+ax.text(0.5, 0.02, 'English: 10,000 (GTZAN 1,000 + MagnaTagATune 9,000)   |   Bangla: 10,020 (BanglaBeats)',
+        ha='center', va='center', fontsize=8.5, color='#555',
         transform=ax.transAxes)
 
 plt.tight_layout()
-plt.savefig(f'{FIG}/dataset_pipeline.png', dpi=150, bbox_inches='tight')
+plt.savefig(f'{FIG}/dataset_pipeline.png', dpi=200, bbox_inches='tight')
 plt.close()
 print("Saved dataset_pipeline.png")
 print(f"Total figures: {len([f for f in os.listdir(FIG) if f.endswith('.png')])}")

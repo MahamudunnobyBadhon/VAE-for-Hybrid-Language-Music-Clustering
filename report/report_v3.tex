@@ -1114,6 +1114,11 @@ Gaussian blobs (high SS). Post-hoc unconditioned K-Means partitions these into 1
 clusters straddling genre+language combinations---hence low ARI against pure-genre
 ground-truth. The CVAE conditions absorb both language and genre signal, leaving no
 residual structure for unsupervised clustering to recover.
+This makes CVAE an excellent tool for \emph{supervised} conditional generation
+(e.g., synthesising audio conditioned on genre), but essentially unsuitable for
+\emph{unsupervised} cluster discovery---which is the core objective of this work.
+The high SS is therefore a property of the conditioning architecture, not evidence
+of meaningful learned structure.
 
 \subsection{Multi-Modal Fusion Trade-Off}
 
