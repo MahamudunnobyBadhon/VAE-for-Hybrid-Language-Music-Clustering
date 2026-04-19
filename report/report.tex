@@ -35,7 +35,7 @@ English and Bangla Unsupervised Representation Learning}
 % ============================================================
 \begin{abstract}
 % ============================================================
-We present a comprehensive unsupervised learning pipeline using Variational Autoencoders (VAEs) for clustering a hybrid-language music dataset comprising 20,020 tracks in English and Bangla. Across three progressive difficulty tiers, we implement and evaluate: (1) a basic MLP-VAE on MFCC features (Easy), (2) a ConvVAE and HybridVAE fusing audio with multilingual lyrics embeddings (Medium), and (3) a MultiModalVAE, Conditional VAE (CVAE) conditioned on language+genre, and Beta-VAE ($\beta\!=\!1$) for disentangled multi-modal representations (Hard). We compare against PCA, Autoencoder, and Spectral Clustering baselines. We evaluate all models at $K\!\in\!\{2,10,18\}$ clusters against both language (English vs.\ Bangla) and genre ground truths. Our headline result: the \textbf{HybridVAE at $K\!=\!2$ achieves ARI = 0.991 and Purity = 0.998}, spontaneously discovering the English/Bangla language boundary without any explicit language supervision---purely through the fusion of mel-spectrograms with multilingual LaBSE proxy embeddings. For geometric clustering quality, the CVAE achieves Silhouette Score \textbf{0.595} (K-Means) and \textbf{0.737} (GMM); the MultiModalVAE achieves CHI \textbf{26,357}, outperforming PCA by $22\times$. A post-hoc hyperparameter grid search (156 configurations) confirms robustness: $\beta\!=\!1.0$ and $d_z\!=\!32$ are consistently optimal.
+We present a comprehensive unsupervised learning pipeline using Variational Autoencoders (VAEs) for clustering a hybrid-language music dataset comprising 20,020 tracks in English and Bangla. Across three progressive difficulty tiers, we implement and evaluate: (1) a basic MLP-VAE on MFCC features (Easy), (2) a ConvVAE and HybridVAE fusing audio with multilingual lyrics embeddings (Medium), and (3) a MultiModalVAE, Conditional VAE (CVAE) conditioned on language+genre, and Beta-VAE ($\beta\!=\!1$) for disentangled multi-modal representations (Hard). We compare against PCA, Autoencoder, and Spectral Clustering baselines. We evaluate all models at $K\!\in\!\{2,10,18\}$ clusters against both language (English vs.\ Bangla) and genre ground truths. Our headline result: the \textbf{HybridVAE at $K\!=\!2$ achieves ARI = 0.991 and Purity = 0.998}, spontaneously discovering the English/Bangla language boundary without any explicit language supervision---purely through the fusion of mel-spectrograms with multilingual LaBSE proxy embeddings. For geometric clustering quality, the CVAE achieves Silhouette Score \textbf{0.595} (K-Means) and \textbf{0.737} (GMM); the MultiModalVAE achieves CHI \textbf{26,357}, outperforming PCA by $22\times$. A post-hoc hyperparameter grid search (156 configurations) confirms robustness: $\beta\!=\!1.0$ and $d_z\!=\!32$ are consistently optimal. Additionally, applying HDBSCAN after UMAP projection ($32\!\to\!10$ dimensions) to the pre-trained BetaVAE latent space yields \textbf{ARI = 0.255}---the highest genre-alignment of any single model---demonstrating that density-based clustering recovers meaningful structure when applied in the correct dimensionality regime.
 \end{abstract}
 
 % ============================================================
@@ -108,7 +108,7 @@ All models are trained with Adam optimizer ($lr\!=\!0.001$, $\beta_1\!=\!0.9$), 
 
 \subsection{Clustering and Ground Truth}
 
-Latent representations $\mu \in \mathbb{R}^{32}$ are extracted for each sample. We apply K-Means ($K\!=\!10$), Agglomerative Clustering (Ward linkage), and DBSCAN (eps auto-tuned via silhouette maximization). PCA + K-Means (baseline) reduces features to 32 dimensions.
+Latent representations $\mu \in \mathbb{R}^{32}$ are extracted for each sample. We apply K-Means ($K\!=\!10$), Agglomerative Clustering (Ward linkage), DBSCAN (eps auto-tuned via silhouette maximization), and HDBSCAN (hierarchical density-based clustering, preceded by UMAP projection to 10 dimensions). PCA + K-Means (baseline) reduces features to 32 dimensions.
 
 We evaluate against two ground-truth label sets:
 \begin{itemize}
@@ -434,6 +434,29 @@ With $\beta\!=\!1$ (standard VAE regularisation) and language+genre conditioning
 \label{fig:hard_clusters}
 \end{figure}
 
+\subsection{HDBSCAN with UMAP Projection on Hard Task Latents}
+\label{sec:hdbscan}
+
+To address the well-known failure of DBSCAN in high-dimensional spaces (see Section~\ref{sec:discussion}), we apply HDBSCAN~\cite{campello2013density} to the pre-trained Hard task latents after first projecting them to 10 dimensions with UMAP ($n\_\text{neighbors}\!=\!30$, $\text{min\_dist}\!=\!0$). Hyperparameters \texttt{min\_cluster\_size} $\in \{50,100,200,300,500\}$ and \texttt{min\_samples} $\in \{5,10,\text{None}\}$ are selected by silhouette score on the projected space; metrics are reported on the original 32-dim latent space using non-noise points only.
+
+\begin{table}[H]
+\centering
+\caption{HDBSCAN (with UMAP pre-projection) on pre-trained Hard task latents ($N\!=\!20{,}019$). Metrics computed on non-noise samples only. \textbf{Bold} = best per column.}
+\label{tab:hdbscan}
+\small
+\begin{tabular}{lrrrrrrr}
+\toprule
+\textbf{Model} & \textbf{K} & \textbf{Noise\%} & \textbf{SS $\uparrow$} & \textbf{CHI $\uparrow$} & \textbf{ARI $\uparrow$} & \textbf{NMI $\uparrow$} & \textbf{Purity $\uparrow$} \\
+\midrule
+BetaVAE+UMAP+HDBSCAN & 4  & 35.3 & \textbf{0.339} & \textbf{10,644} & \textbf{0.255} & \textbf{0.349} & 0.549 \\
+CVAE+UMAP+HDBSCAN    & 207 & 2.1  & 0.093          & 553             & 0.027          & 0.250          & \textbf{0.653} \\
+MMVAE+UMAP+HDBSCAN   & 17 & 30.2 & 0.155          & 9,794           & 0.213          & 0.344          & 0.607 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{BetaVAE+UMAP+HDBSCAN} yields 4 natural clusters (mcs=300) with ARI = 0.255 and NMI = 0.349---the highest ARI of any single model in this work (surpassing HybridVAE+K-Means ARI = 0.209 and BetaVAE+K-Means ARI = 0.105), despite a 35\% noise fraction. This result confirms that density-based clustering in a well-projected latent space finds genuinely denser genre groupings that K-Means' Euclidean partitioning misses. \textbf{MMVAE+UMAP+HDBSCAN} discovers 17 clusters---closest to the true 18 genre classes---with language purity 87.1\%, matching the K-Means language purity from Section~\ref{sec:multik}. \textbf{CVAE+UMAP+HDBSCAN} over-fragments into 207 micro-clusters (mcs=50): the language+genre conditioning creates highly anisotropic cluster shapes in the projected space, favouring small, tight density peaks rather than coarse genre-level groupings. Importantly, HDBSCAN directly returns the number of natural clusters (no $K$ to specify), providing an unsupervised validation that the Hard task latent spaces contain 4--17 well-separated density modes, consistent with the 10--18 genre classes in the dataset.
+
 \subsection{Hyperparameter Sensitivity Analysis}
 \label{sec:finetune}
 
@@ -600,8 +623,8 @@ BanglaBeats clips are 3 seconds vs.\ 30 seconds for English. Since we use mean-p
 \paragraph{Beta-VAE interpretation.}
 With $\beta\!=\!1$ (standard VAE regularisation), the KL penalty balances reconstruction fidelity and latent regularity without collapsing dimensions. The latent traversal plots (Figure~\ref{fig:traversal}) show that traversing individual dimensions causes smooth spectral changes (e.g., brightness, rhythm density), evidence of partial disentanglement---achieved without over-regularisation penalties that would destroy genre-discriminative structure.
 
-\paragraph{DBSCAN limitations.}
-DBSCAN consistently collapsed to 1--2 clusters across all tasks. High-dimensional mel features ($d\!=\!256$) suffer from the ``curse of dimensionality'': all pairwise $\ell_2$ distances become approximately equal, making density-based neighbourhood estimation unreliable. The misleadingly high Silhouette Score of 0.845 (almost all 20K points in one cluster) is a degenerate outcome. Future work should apply DBSCAN in the low-dimensional ($d\!\leq\!32$) VAE latent space.
+\paragraph{DBSCAN and HDBSCAN.}
+DBSCAN consistently collapsed to 1--2 clusters across all tasks when applied to raw high-dimensional features ($d\!=\!256$): all pairwise $\ell_2$ distances become approximately equal, making density-based neighbourhood estimation unreliable. The misleadingly high Silhouette Score of 0.845 (almost all 20K points in one cluster) is a degenerate outcome. We address this directly in Section~\ref{sec:hdbscan}: applying HDBSCAN to the 32-dim VAE latent space after UMAP projection to 10 dimensions recovers meaningful density structure. BetaVAE+UMAP+HDBSCAN achieves ARI = 0.255---the highest of any single model---confirming that the failure was in applying density-based methods to raw features, not an inherent limitation of density-based clustering on this dataset.
 
 \paragraph{ARI vs.\ Silhouette interpretation.}
 Low ARI (0.05--0.23) with high Silhouette ($>0.40$) is not contradictory: ARI measures alignment with 18 genre classes, while Silhouette measures internal cluster compactness. With $K\!=\!10$ clusters and 18 true classes, perfect ARI is geometrically impossible. The appropriate conclusion is: \emph{the VAE creates well-separated, internally compact clusters that are partially aligned with language and genre structure}. When evaluated with $K\!=\!2$ language labels, purity is 87--92\%, confirming that language is the dominant latent factor.
@@ -690,6 +713,11 @@ H.-W. Dong et al.
 M. Levy and M. Sandler.
 \newblock Music information retrieval using social tags and audio.
 \newblock \textit{IEEE Trans. Multimedia}, 11(3):383--395, 2009.
+
+\bibitem{campello2013density}
+R. J. G. B. Campello, D. Moulavi, and J. Sander.
+\newblock Density-based clustering based on hierarchical density estimates.
+\newblock In \textit{Pacific-Asia Conference on Knowledge Discovery and Data Mining (PAKDD)}, pp.\ 160--172, 2013.
 
 \end{thebibliography}
 

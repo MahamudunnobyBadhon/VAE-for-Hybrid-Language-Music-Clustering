@@ -1,0 +1,4 @@
+model,n_clusters,noise_count,noise_pct,min_cluster_size,min_samples,silhouette,calinski_harabasz,davies_bouldin,ari,nmi,purity,lang_purity
+BetaVAE+UMAP+HDBSCAN,4,7066,35.3,300,None,0.339,10644.3,1.1397,0.2548,0.3487,0.5492,0.8217
+CVAE+UMAP+HDBSCAN,207,426,2.1,50,10,0.0925,553.0,20.2104,0.0267,0.2496,0.6532,0.718
+MMVAE+UMAP+HDBSCAN,17,6050,30.2,300,5,0.1554,9793.6,1.434,0.213,0.3435,0.6074,0.8709

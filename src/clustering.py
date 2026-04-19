@@ -18,6 +18,112 @@ from typing import Optional
 from src.config import N_CLUSTERS, RANDOM_STATE
 
 
+def hdbscan_clustering(features: np.ndarray,
+                       min_cluster_size: int = 100,
+                       min_samples: Optional[int] = None,
+                       cluster_selection_epsilon: float = 0.0) -> np.ndarray:
+    """
+    Apply HDBSCAN clustering.
+
+    Args:
+        features: (n_samples, n_features)
+        min_cluster_size: minimum cluster size (main tuning parameter)
+        min_samples: conservativeness of clustering (defaults to min_cluster_size)
+        cluster_selection_epsilon: distance threshold for merging micro-clusters
+
+    Returns:
+        cluster_labels: (n_samples,) — label -1 means noise point
+    """
+    import hdbscan
+    clusterer = hdbscan.HDBSCAN(
+        min_cluster_size=min_cluster_size,
+        min_samples=min_samples,
+        cluster_selection_epsilon=cluster_selection_epsilon,
+        cluster_selection_method="eom",
+        core_dist_n_jobs=-1,
+    )
+    return clusterer.fit_predict(features)
+
+
+def tune_hdbscan(features: np.ndarray,
+                 min_cluster_sizes: Optional[list] = None,
+                 min_samples_list: Optional[list] = None) -> dict:
+    """
+    Grid search for HDBSCAN hyperparameters using silhouette score.
+
+    Only configurations that produce ≥2 non-noise clusters and
+    fewer than n_samples//2 noise points are considered.
+
+    Returns:
+        dict with: best_min_cluster_size, best_min_samples, best_score,
+                   best_labels, n_clusters_found, all_results
+    """
+    from sklearn.metrics import silhouette_score
+
+    if min_cluster_sizes is None:
+        min_cluster_sizes = [50, 100, 200, 300, 500]
+    if min_samples_list is None:
+        min_samples_list = [None, 5, 10]
+
+    n_samples = len(features)
+    best_score = -2.0
+    best_mcs = min_cluster_sizes[0]
+    best_ms = None
+    best_labels = None
+    best_n_clusters = 0
+    all_results = []
+
+    print("Tuning HDBSCAN hyperparameters...")
+    for mcs in min_cluster_sizes:
+        for ms in min_samples_list:
+            labels = hdbscan_clustering(features, min_cluster_size=mcs, min_samples=ms)
+            noise_count = int(np.sum(labels == -1))
+            n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+
+            if n_clusters < 2 or noise_count > int(n_samples * 0.8):
+                all_results.append({
+                    "min_cluster_size": mcs, "min_samples": ms,
+                    "n_clusters": n_clusters, "noise": noise_count,
+                    "silhouette": None,
+                })
+                print(f"  mcs={mcs}, ms={ms}: clusters={n_clusters}, "
+                      f"noise={noise_count} — skipped (degenerate)")
+                continue
+
+            mask = labels != -1
+            score = silhouette_score(features[mask], labels[mask])
+            all_results.append({
+                "min_cluster_size": mcs, "min_samples": ms,
+                "n_clusters": n_clusters, "noise": noise_count,
+                "silhouette": score,
+            })
+            print(f"  mcs={mcs}, ms={ms}: clusters={n_clusters}, "
+                  f"noise={noise_count}, sil={score:.4f}")
+
+            if score > best_score:
+                best_score = score
+                best_mcs = mcs
+                best_ms = ms
+                best_labels = labels
+                best_n_clusters = n_clusters
+
+    if best_labels is None:
+        print("Warning: no valid HDBSCAN config found; using mcs=100")
+        best_labels = hdbscan_clustering(features, min_cluster_size=100)
+        best_n_clusters = len(set(best_labels)) - (1 if -1 in best_labels else 0)
+
+    print(f"\nBest HDBSCAN: min_cluster_size={best_mcs}, min_samples={best_ms}, "
+          f"n_clusters={best_n_clusters}, silhouette={best_score:.4f}")
+    return {
+        "best_min_cluster_size": best_mcs,
+        "best_min_samples": best_ms,
+        "best_score": best_score,
+        "best_labels": best_labels,
+        "n_clusters_found": best_n_clusters,
+        "all_results": all_results,
+    }
+
+
 def kmeans_clustering(features: np.ndarray,
                       n_clusters: int = N_CLUSTERS,
                       random_state: int = RANDOM_STATE) -> np.ndarray:

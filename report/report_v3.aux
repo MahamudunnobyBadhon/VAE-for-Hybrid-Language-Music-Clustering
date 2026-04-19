@@ -1,0 +1,187 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand*\HyPL@Entry[1]{}
+\citation{campello2013density}
+\HyPL@Entry{0<</S/D>>}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{kingma2013auto}
+\citation{higgins2017betavae}
+\citation{sohn2015learning}
+\citation{roberts2018hierarchical}
+\citation{choi2016automatic}
+\citation{dong2018convolutional}
+\citation{baevski2020wav2vec}
+\citation{elizalde2022clap}
+\citation{reimers2019sentence}
+\citation{tzanetakis2002musical}
+\citation{levy2006music}
+\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{paragraph*.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The three-stage research journey: v1 baseline (ARI\,=\,0.991 claimed) $\to $ artefact diagnosis (two bugs identified) $\to $ v2 corrected (genuine ARI\,=\,0.484). Each panel summarises the key methods, features, and findings of that stage.\relax }}{2}{figure.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:journey}{{1}{2}{The three-stage research journey: v1 baseline (ARI\,=\,0.991 claimed) $\to $ artefact diagnosis (two bugs identified) $\to $ v2 corrected (genuine ARI\,=\,0.484). Each panel summarises the key methods, features, and findings of that stage.\relax }{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Variational Autoencoders.}{2}{paragraph*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Music Representation Learning.}{2}{paragraph*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Multilingual Audio Understanding.}{2}{paragraph*.5}\protected@file@percent }
+\citation{reimers2019sentence}
+\@writefile{toc}{\contentsline {paragraph}{Music Clustering.}{3}{paragraph*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Shared Methodology}{3}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{3}{Shared Methodology}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Dataset}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Dataset composition (identical across v1 and v2).\relax }}{3}{table.caption.7}\protected@file@percent }
+\newlabel{tab:dataset}{{1}{3}{Dataset composition (identical across v1 and v2).\relax }{table.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Feature Extraction}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Model Architectures}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Task 1 --- MLP-VAE (Easy, BasicVAE).}{3}{paragraph*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Task 2a --- ConvVAE (Medium).}{3}{paragraph*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Task 2b --- HybridVAE (Medium).}{3}{paragraph*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Task 3a --- MultiModalVAE (Hard).}{3}{paragraph*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Task 3b --- CVAE (Hard).}{3}{paragraph*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Task 3c --- Beta-VAE (Hard).}{3}{paragraph*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Training Details}{3}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Why Three Values of $K$?}{3}{subsection.3.5}\protected@file@percent }
+\newlabel{sec:why_k}{{3.5}{3}{Why Three Values of $K$?}{subsection.3.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Ground-truth label structure motivating three $K$ values. Left: near-equal English/Bangla split (10,000 vs 10,020 tracks) motivates $K\!=\!2$. Centre: 10 GTZAN genres + Bangla genres + MagnaTagATune mapped to 10 clusters. Right: 18 distinct labeled genres (10 English + 8 Bangla) once MagnaTagATune's 9,000 untagged tracks are excluded.\relax }}{4}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:why_k}{{2}{4}{Ground-truth label structure motivating three $K$ values. Left: near-equal English/Bangla split (10,000 vs 10,020 tracks) motivates $K\!=\!2$. Centre: 10 GTZAN genres + Bangla genres + MagnaTagATune mapped to 10 clusters. Right: 18 distinct labeled genres (10 English + 8 Bangla) once MagnaTagATune's 9,000 untagged tracks are excluded.\relax }{figure.caption.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Evaluation Metrics}{4}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Stage 1 --- v1 Original Results}{4}{section.4}\protected@file@percent }
+\newlabel{sec:stage1}{{4}{4}{Stage 1 --- v1 Original Results}{section.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Data preprocessing and VAE pipeline overview. Audio is loaded at 22,050\,Hz; features extracted per-clip and normalised; VAE trained end-to-end on the full 20,020-track dataset.\relax }}{5}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:pipeline}{{3}{5}{Data preprocessing and VAE pipeline overview. Audio is loaded at 22,050\,Hz; features extracted per-clip and normalised; VAE trained end-to-end on the full 20,020-track dataset.\relax }{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Ablation: synthetic 500-sample vs.\ real 20,020-sample dataset. VAE Silhouette: $0.393 \to 0.429$ (+9\%). PCA Silhouette: $0.336 \to 0.105$ ($-69\%$), demonstrating VAE robustness to data diversity.\relax }}{5}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:progression}{{4}{5}{Ablation: synthetic 500-sample vs.\ real 20,020-sample dataset. VAE Silhouette: $0.393 \to 0.429$ (+9\%). PCA Silhouette: $0.336 \to 0.105$ ($-69\%$), demonstrating VAE robustness to data diversity.\relax }{figure.caption.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Comprehensive comparison: SS and ARI for synthetic vs.\ real data, VAE vs.\ PCA gap across tasks. VAE representations are significantly more robust to scale.\relax }}{6}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:full_comparison}{{5}{6}{Comprehensive comparison: SS and ARI for synthetic vs.\ real data, VAE vs.\^^MPCA gap across tasks. VAE representations are significantly more robust to scale.\relax }{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}v1 Easy Task: MLP-VAE on MFCC}{6}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces v1 Easy Task: MLP-VAE training convergence and latent space cluster structure.\relax }}{6}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:v1_easy}{{6}{6}{v1 Easy Task: MLP-VAE training convergence and latent space cluster structure.\relax }{figure.caption.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces v1 Easy Task: MFCC features show partial language separation (clip-length bias visible as two-cloud structure). Elbow around $K\!=\!8$--$10$ confirms $K\!=\!10$.\relax }}{7}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:v1_easy_lang}{{7}{7}{v1 Easy Task: MFCC features show partial language separation (clip-length bias visible as two-cloud structure). Elbow around $K\!=\!8$--$10$ confirms $K\!=\!10$.\relax }{figure.caption.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}v1 Medium Task: ConvVAE and HybridVAE}{7}{subsection.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces v1 Medium Task training curves. HybridVAE converges on 640-dim joint input.\relax }}{7}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:v1_medium_training}{{8}{7}{v1 Medium Task training curves. HybridVAE converges on 640-dim joint input.\relax }{figure.caption.20}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces v1 Medium Task: t-SNE by language. HybridVAE (right) shows dramatically clean two-cluster separation driven by language-tagged proxy lyrics---the v1 artefact (ARI\,=\,0.991, identified in Stage\nobreakspace  {}2 as label leakage).\relax }}{7}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:v1_medium_lang}{{9}{7}{v1 Medium Task: t-SNE by language. HybridVAE (right) shows dramatically clean two-cluster separation driven by language-tagged proxy lyrics---the v1 artefact (ARI\,=\,0.991, identified in Stage~2 as label leakage).\relax }{figure.caption.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces v1 Medium Task: K-Means cluster structure and language separation.\relax }}{8}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:v1_medium_tsne}{{10}{8}{v1 Medium Task: K-Means cluster structure and language separation.\relax }{figure.caption.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}v1 Hard Task: MultiModalVAE, CVAE, and Beta-VAE}{8}{subsection.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces v1 Hard Task training curves (60 epochs).\relax }}{8}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:v1_hard_training}{{11}{8}{v1 Hard Task training curves (60 epochs).\relax }{figure.caption.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces v1 Hard Task: language separation in CVAE and BetaVAE latent spaces.\relax }}{8}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:v1_hard_lang}{{12}{8}{v1 Hard Task: language separation in CVAE and BetaVAE latent spaces.\relax }{figure.caption.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces v1 Hard Task: t-SNE cluster visualisations and metric comparison.\relax }}{9}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:v1_hard_clusters}{{13}{9}{v1 Hard Task: t-SNE cluster visualisations and metric comparison.\relax }{figure.caption.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces VAE reconstruction examples. Both models faithfully decode spectral structure from 32-dim latent codes.\relax }}{9}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:reconstructions}{{14}{9}{VAE reconstruction examples. Both models faithfully decode spectral structure from 32-dim latent codes.\relax }{figure.caption.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces BetaVAE latent traversal: dimension 0 varies $-3 \to +3$. Smooth spectral transitions confirm partial disentanglement without over-regularisation.\relax }}{9}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:traversal}{{15}{9}{BetaVAE latent traversal: dimension 0 varies $-3 \to +3$. Smooth spectral transitions confirm partial disentanglement without over-regularisation.\relax }{figure.caption.27}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}v1 Multi-$K$ Results}{10}{subsection.4.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces v1 Multi-K evaluation: ARI (left) and Silhouette Score (right) across $K\!\in \!\{2,10,18\}$. HybridVAE dominates ARI at all $K$ values. BetaVAE's high SS at $\beta \!=\!4$ is an over-regularisation artefact.\relax }}{10}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:v1_multik}{{16}{10}{v1 Multi-K evaluation: ARI (left) and Silhouette Score (right) across $K\!\in \!\{2,10,18\}$. HybridVAE dominates ARI at all $K$ values. BetaVAE's high SS at $\beta \!=\!4$ is an over-regularisation artefact.\relax }{figure.caption.28}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces v1 Multi-$K$ evaluation (K-Means only). HybridVAE achieves ARI\,=\,0.991 at $K\!=\!2$---later identified as a label-leakage artefact. \textbf  {Bold} = best per column per $K$.\relax }}{10}{table.caption.29}\protected@file@percent }
+\newlabel{tab:v1_multik}{{2}{10}{v1 Multi-$K$ evaluation (K-Means only). HybridVAE achieves ARI\,=\,0.991 at $K\!=\!2$---later identified as a label-leakage artefact. \textbf {Bold} = best per column per $K$.\relax }{table.caption.29}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}v1 Hyperparameter Sensitivity}{11}{subsection.4.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces v1 fine-tune grid search (156 configs): $\beta \!=\!1.0$ and $d_z\!=\!32$ consistently optimal across all architectures. Over-regularisation ($\beta \!=\!4$) yields artefactually high SS but near-zero ARI.\relax }}{11}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:finetune}{{17}{11}{v1 fine-tune grid search (156 configs): $\beta \!=\!1.0$ and $d_z\!=\!32$ consistently optimal across all architectures. Over-regularisation ($\beta \!=\!4$) yields artefactually high SS but near-zero ARI.\relax }{figure.caption.30}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces v1 Hyperparameter sensitivity: best configs per metric ($K\!=\!10$, K-Means, labeled-only eval). $\beta \!=\!1.0$ consistently outperforms $\beta \!=\!2.0$ in SS (+32\%), confirming the main task's choice.\relax }}{11}{table.caption.31}\protected@file@percent }
+\newlabel{tab:finetune}{{3}{11}{v1 Hyperparameter sensitivity: best configs per metric ($K\!=\!10$, K-Means, labeled-only eval). $\beta \!=\!1.0$ consistently outperforms $\beta \!=\!2.0$ in SS (+32\%), confirming the main task's choice.\relax }{table.caption.31}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces v1 Before vs.\ after optimisation for Hard task models: $\beta \!=\!4$ language-only CVAE (before) vs.\ $\beta \!=\!1$ language+genre CVAE (after), at $K\!\in \!\{2,10,18\}$. \textbf  {Bold} = improved value.\relax }}{11}{table.caption.32}\protected@file@percent }
+\newlabel{tab:before_after}{{4}{11}{v1 Before vs.\ after optimisation for Hard task models: $\beta \!=\!4$ language-only CVAE (before) vs.\ $\beta \!=\!1$ language+genre CVAE (after), at $K\!\in \!\{2,10,18\}$. \textbf {Bold} = improved value.\relax }{table.caption.32}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Stage 2 --- Artefact Discovery and Diagnosis}{11}{section.5}\protected@file@percent }
+\newlabel{sec:stage2}{{5}{11}{Stage 2 --- Artefact Discovery and Diagnosis}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Cause 1 --- Label Leakage in Proxy Lyrics}{11}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Cause 2 --- Clip-Length Bias}{12}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Summary of v1 $\to $ v2 Methodological Changes}{12}{subsection.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Complete v1 $\to $ v2 methodological change log. Every change is documented with the affected code file.\relax }}{12}{table.caption.33}\protected@file@percent }
+\newlabel{tab:changelist}{{5}{12}{Complete v1 $\to $ v2 methodological change log. Every change is documented with the affected code file.\relax }{table.caption.33}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Stage 3 --- v2 Corrected Results}{12}{section.6}\protected@file@percent }
+\newlabel{sec:stage3}{{6}{12}{Stage 3 --- v2 Corrected Results}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}v2 Easy Task: MLP-VAE on MFCC (3\,s window)}{13}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces v2 Easy Task (MFCC, 3\,s window, $N\!=\!20{,}020$). Best clustering per row selected by ARI. \textbf  {Bold} = best per column.\relax }}{13}{table.caption.34}\protected@file@percent }
+\newlabel{tab:v2_easy}{{6}{13}{v2 Easy Task (MFCC, 3\,s window, $N\!=\!20{,}020$). Best clustering per row selected by ARI. \textbf {Bold} = best per column.\relax }{table.caption.34}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}v2 Medium Task: ConvVAE and HybridVAE}{13}{subsection.6.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces \textbf  {[v2 Corrected]} Language separation ($K\!=\!2$) across all models, using corrected features and exhaustive clustering. HybridVAE + KMeans achieves genuine ARI\,=\,0.484 and Purity\,=\,0.848 (was ARI\,=\,0.991 artefactual in v1). CVAE leads on geometric SS (0.852) but ARI\,$\approx $\,0 since conditioning absorbs all language signal. Numbers sourced directly from \texttt  {results/v2/leaderboard\_v2.csv}.\relax }}{13}{figure.caption.35}\protected@file@percent }
+\newlabel{fig:v2_lang_bar}{{18}{13}{\textbf {[v2 Corrected]} Language separation ($K\!=\!2$) across all models, using corrected features and exhaustive clustering. HybridVAE + KMeans achieves genuine ARI\,=\,0.484 and Purity\,=\,0.848 (was ARI\,=\,0.991 artefactual in v1). CVAE leads on geometric SS (0.852) but ARI\,$\approx $\,0 since conditioning absorbs all language signal. Numbers sourced directly from \texttt {results/v2/leaderboard\_v2.csv}.\relax }{figure.caption.35}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces v2 Medium Task (mel features, 3\,s window, $N\!=\!20{,}020$). Best clustering per row by ARI. \textbf  {Bold} = best per column per $K$.\relax }}{13}{table.caption.36}\protected@file@percent }
+\newlabel{tab:v2_medium}{{7}{13}{v2 Medium Task (mel features, 3\,s window, $N\!=\!20{,}020$). Best clustering per row by ARI. \textbf {Bold} = best per column per $K$.\relax }{table.caption.36}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces \textbf  {[v2 Corrected, v2 checkpoint]} t-SNE of v2 HybridVAE latent space (5,000 samples, retrained on language-neutral lyrics + 3\,s window features). \textit  {Left}: coloured by language---two partially separating clouds confirm genuine ARI\,=\,0.484 at $K\!=\!2$. Compare to v1 latent space (Figure\nobreakspace  {}\ref  {fig:v1_medium_lang}) where clouds were completely separated due to label leakage. \textit  {Right}: coloured by genre---genre structure clusters within language regions, confirming ARI\,=\,0.436 at $K\!=\!18$.\relax }}{14}{figure.caption.37}\protected@file@percent }
+\newlabel{fig:v2_tsne}{{19}{14}{\textbf {[v2 Corrected, v2 checkpoint]} t-SNE of v2 HybridVAE latent space (5,000 samples, retrained on language-neutral lyrics + 3\,s window features). \textit {Left}: coloured by language---two partially separating clouds confirm genuine ARI\,=\,0.484 at $K\!=\!2$. Compare to v1 latent space (Figure~\ref {fig:v1_medium_lang}) where clouds were completely separated due to label leakage. \textit {Right}: coloured by genre---genre structure clusters within language regions, confirming ARI\,=\,0.436 at $K\!=\!18$.\relax }{figure.caption.37}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}v2 Hard Task: MultiModalVAE, CVAE, and Beta-VAE}{14}{subsection.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces \textbf  {[v2 Corrected]} Genre clustering at K=10 (all tracks, left) and K=18 (labeled tracks only, right). HybridVAE leads on ARI and NMI at both $K$ values. PCA-Combined is competitive on ARI at $K\!=\!10$ via raw spectral frequency preservation.\relax }}{14}{figure.caption.38}\protected@file@percent }
+\newlabel{fig:v2_genre}{{20}{14}{\textbf {[v2 Corrected]} Genre clustering at K=10 (all tracks, left) and K=18 (labeled tracks only, right). HybridVAE leads on ARI and NMI at both $K$ values. PCA-Combined is competitive on ARI at $K\!=\!10$ via raw spectral frequency preservation.\relax }{figure.caption.38}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces v2 Hard Task ($d_z\!=\!32$, $N\!=\!20{,}020$). CVAE conditioned on language+genre one-hot (22-dim). Best clustering per row by ARI. \textbf  {Bold} = best VAE per column per $K$.\relax }}{14}{table.caption.39}\protected@file@percent }
+\newlabel{tab:v2_hard}{{8}{14}{v2 Hard Task ($d_z\!=\!32$, $N\!=\!20{,}020$). CVAE conditioned on language+genre one-hot (22-dim). Best clustering per row by ARI. \textbf {Bold} = best VAE per column per $K$.\relax }{table.caption.39}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}v2 Full Multi-$K$ Evaluation}{15}{subsection.6.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces v2 Full multi-$K$ evaluation (best clustering per row by ARI). \textbf  {Bold} = best per block per $K$.\relax }}{15}{table.caption.40}\protected@file@percent }
+\newlabel{tab:v2_multik}{{9}{15}{v2 Full multi-$K$ evaluation (best clustering per row by ARI). \textbf {Bold} = best per block per $K$.\relax }{table.caption.40}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces v2 Best model per task and $K$ (corrected results). \textbf  {Bold} = best per column.\relax }}{15}{table.caption.41}\protected@file@percent }
+\newlabel{tab:v2_summary}{{10}{15}{v2 Best model per task and $K$ (corrected results). \textbf {Bold} = best per column.\relax }{table.caption.41}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}v2 Hyperparameter Sensitivity (Quick Grid)}{15}{subsection.6.5}\protected@file@percent }
+\newlabel{sec:finetune_v2}{{6.5}{15}{v2 Hyperparameter Sensitivity (Quick Grid)}{subsection.6.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{What the finetune does.}{15}{paragraph*.42}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{v1 vs v2 finetune comparison.}{15}{paragraph*.43}\protected@file@percent }
+\citation{campello2013density}
+\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces Finetune analysis. \textit  {Left}: $\beta \!=\!1$ outperforms $\beta \!=\!2$ on ARI at $K\!=\!10$ for all models. \textit  {Centre}: HybridVAE ARI improves with $K$ (best at $K\!=\!18$ when cluster count matches genre count). \textit  {Right}: v1 full grid (156 configs) vs v2 quick grid Silhouette Score comparison---consistent results confirm $\beta \!=\!1$, $d_z\!=\!32$ is robust across both feature sets.\relax }}{16}{figure.caption.44}\protected@file@percent }
+\newlabel{fig:finetune_v2}{{21}{16}{Finetune analysis. \textit {Left}: $\beta \!=\!1$ outperforms $\beta \!=\!2$ on ARI at $K\!=\!10$ for all models. \textit {Centre}: HybridVAE ARI improves with $K$ (best at $K\!=\!18$ when cluster count matches genre count). \textit {Right}: v1 full grid (156 configs) vs v2 quick grid Silhouette Score comparison---consistent results confirm $\beta \!=\!1$, $d_z\!=\!32$ is robust across both feature sets.\relax }{figure.caption.44}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces v2 Quick hyperparameter grid ($\beta \!\in \!\{1,2\}$, $d_z\!=\!32$, 30 epochs). $\beta \!=\!1$ consistently outperforms $\beta \!=\!2$ in ARI across all models, confirming the v1 grid finding on corrected v2 features.\relax }}{16}{table.caption.45}\protected@file@percent }
+\newlabel{tab:v2_finetune}{{11}{16}{v2 Quick hyperparameter grid ($\beta \!\in \!\{1,2\}$, $d_z\!=\!32$, 30 epochs). $\beta \!=\!1$ consistently outperforms $\beta \!=\!2$ in ARI across all models, confirming the v1 grid finding on corrected v2 features.\relax }{table.caption.45}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}HDBSCAN with UMAP Projection on Hard Task Latents}{16}{subsection.6.6}\protected@file@percent }
+\newlabel{sec:hdbscan}{{6.6}{16}{HDBSCAN with UMAP Projection on Hard Task Latents}{subsection.6.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces HDBSCAN (UMAP $32\!\to \!10$d pre-projection) on pre-trained Hard task latents ($N\!=\!20{,}019$). $K$ = number of clusters found automatically; Noise\% = fraction of points assigned to the noise class. Metrics on non-noise samples only. \textbf  {Bold} = best per column.\relax }}{16}{table.caption.46}\protected@file@percent }
+\newlabel{tab:hdbscan}{{12}{16}{HDBSCAN (UMAP $32\!\to \!10$d pre-projection) on pre-trained Hard task latents ($N\!=\!20{,}019$). $K$ = number of clusters found automatically; Noise\% = fraction of points assigned to the noise class. Metrics on non-noise samples only. \textbf {Bold} = best per column.\relax }{table.caption.46}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Cross-Stage Comparison}{17}{section.7}\protected@file@percent }
+\newlabel{sec:comparison}{{7}{17}{Cross-Stage Comparison}{section.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces Step-by-step ARI improvement across all six VAE models. \textit  {Left}: Language ($K\!=\!2$)---v1 HybridVAE ARI\,=\,0.991 collapses to genuine 0.484 after both artefacts are removed; other models improve modestly. \textit  {Right}: Genre ($K\!=\!10$)---all models improve from exhaustive clustering (no retraining needed); HybridVAE improves +54\%. The v1 artefact (dashed red line) is annotated to show the removal.\relax }}{17}{figure.caption.47}\protected@file@percent }
+\newlabel{fig:progression_full}{{22}{17}{Step-by-step ARI improvement across all six VAE models. \textit {Left}: Language ($K\!=\!2$)---v1 HybridVAE ARI\,=\,0.991 collapses to genuine 0.484 after both artefacts are removed; other models improve modestly. \textit {Right}: Genre ($K\!=\!10$)---all models improve from exhaustive clustering (no retraining needed); HybridVAE improves +54\%. The v1 artefact (dashed red line) is annotated to show the removal.\relax }{figure.caption.47}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}v1 $\to $ v2 Step-by-Step Improvement}{17}{subsection.7.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {23}{\ignorespaces \textbf  {[v2 figures]} Left: genre ARI improves +98\% ($K\!=\!10$) and +58\% ($K\!=\!10$ NMI) from exhaustive clustering, with no retraining. Right: full ARI landscape across all models and $K$ values.\relax }}{17}{figure.caption.48}\protected@file@percent }
+\newlabel{fig:v2summary}{{23}{17}{\textbf {[v2 figures]} Left: genre ARI improves +98\% ($K\!=\!10$) and +58\% ($K\!=\!10$ NMI) from exhaustive clustering, with no retraining. Right: full ARI landscape across all models and $K$ values.\relax }{figure.caption.48}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Three-way comparison: v1 (original) $\to $ v2-intermediate (leakage present) $\to $ v2-corrected (leakage removed). HybridVAE, $K\!=\!2$ language evaluation.\relax }}{18}{table.caption.49}\protected@file@percent }
+\newlabel{tab:threeway}{{13}{18}{Three-way comparison: v1 (original) $\to $ v2-intermediate (leakage present) $\to $ v2-corrected (leakage removed). HybridVAE, $K\!=\!2$ language evaluation.\relax }{table.caption.49}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces v1 vs.\ v2 direct metric comparison (HybridVAE), confirming genuine improvement in genre alignment after leakage correction.\relax }}{18}{table.caption.50}\protected@file@percent }
+\newlabel{tab:v1v2direct}{{14}{18}{v1 vs.\ v2 direct metric comparison (HybridVAE), confirming genuine improvement in genre alignment after leakage correction.\relax }{table.caption.50}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Complete Cross-Stage Summary Table}{18}{subsection.7.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Complete cross-stage summary: v1 vs.\ v2-corrected for all models at $K\!=\!10$. Exhaustive clustering in v2 accounts for substantial ARI gains independent of retraining.\relax }}{18}{table.caption.51}\protected@file@percent }
+\newlabel{tab:crossstage}{{15}{18}{Complete cross-stage summary: v1 vs.\ v2-corrected for all models at $K\!=\!10$. Exhaustive clustering in v2 accounts for substantial ARI gains independent of retraining.\relax }{table.caption.51}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Discussion}{18}{section.8}\protected@file@percent }
+\newlabel{sec:discussion}{{8}{18}{Discussion}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}The v1 ARI $\approx 0.991$ Was a Methodological Artefact}{18}{subsection.8.1}\protected@file@percent }
+\citation{campello2013density}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Why GMM Beats K-Means for HybridVAE?}{19}{subsection.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Why PCA Baselines Are Competitive on ARI?}{19}{subsection.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}CVAE: High SS, Low ARI}{19}{subsection.8.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Multi-Modal Fusion Trade-Off}{19}{subsection.8.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.6}$\beta \!=\!1$ is the Optimal Regularisation Strength}{19}{subsection.8.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.7}DBSCAN Limitations and HDBSCAN Resolution}{19}{subsection.8.7}\protected@file@percent }
+\citation{tzanetakis2002musical}
+\citation{reimers2019sentence}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion}{20}{section.9}\protected@file@percent }
+\bibstyle{plain}
+\bibcite{kingma2013auto}{1}
+\bibcite{higgins2017betavae}{2}
+\bibcite{sohn2015learning}{3}
+\bibcite{roberts2018hierarchical}{4}
+\bibcite{reimers2019sentence}{5}
+\bibcite{baevski2020wav2vec}{6}
+\bibcite{elizalde2022clap}{7}
+\bibcite{tzanetakis2002musical}{8}
+\bibcite{mcfee2015librosa}{9}
+\bibcite{choi2016automatic}{10}
+\bibcite{dong2018convolutional}{11}
+\bibcite{levy2006music}{12}
+\bibcite{campello2013density}{13}
+\gdef \@abspage@last{21}
