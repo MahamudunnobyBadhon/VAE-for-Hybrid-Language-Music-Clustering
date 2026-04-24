@@ -1,7 +1,7 @@
 \documentclass{article}
 
 % NeurIPS 2024 style (simplified standalone version)
-\usepackage[preprint]{neurips_2024}
+\usepackage[final]{neurips_2024}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
@@ -21,10 +21,10 @@
 A Progressive Study: Baseline, Artefact Discovery, and Corrected Results}
 
 \author{%
-  CSE715 --- Neural Networks\\
-  Spring 2026\\
-  Instructor: Moin Mostakim\\
-  \textit{(v3: combined v1 original + v2 corrected; step-by-step improvement)}
+  Moin Mostakim \\
+  Md. Mahamudunnoby Badhon \\
+  Rownok Jahan Nishat \\
+  Nafisuzzaman Ayon
 }
 
 \begin{document}
@@ -57,9 +57,12 @@ After correction, HybridVAE achieves genuine ARI\,=\,\textbf{0.484} at $K\!=\!2$
 The drop from v1 ARI\,=\,0.991 to v2 ARI\,=\,0.484 quantifies the artefact contribution;
 the remaining 0.484 represents genuine, partially supervised cross-lingual music structure.
 Finally, applying HDBSCAN~\cite{campello2013density} after UMAP projection ($32\!\to\!10$\,d)
-to the pre-trained BetaVAE latent space yields \textbf{ARI\,=\,0.255}---the highest
-genre-alignment of any \emph{single unsupervised model}---demonstrating that density-based
-clustering recovers meaningful structure when applied in the correct dimensionality regime.
+to the pre-trained BetaVAE latent space yields \textbf{ARI\,=\,0.255} while automatically
+discovering $K\!=\!4$ clusters without any pre-specified cluster count---demonstrating that
+density-based clustering recovers meaningful structure when applied in the correct
+dimensionality regime. This is the best result achieved without fixing $K$ a priori;
+the parametric HybridVAE+K-Means route remains higher ($K\!=\!10$: ARI\,=\,0.413;
+$K\!=\!18$: ARI\,=\,0.436) when $K$ is supplied.
 \end{abstract}
 
 % ============================================================
@@ -601,8 +604,14 @@ $\beta$ to 1 reduces SS but unlocks real genre structure (ARI $+0.09$).
 % ============================================================
 
 After completing v1, re-running the pipeline produced ARI $\approx 1.000$ instead of
-the v1 0.991---an implausibly perfect result. Investigation uncovered two compounding
-causes.
+the v1 0.991---an implausibly perfect result. We refer to this re-run (same v1 code
+path, same features, but clustering now including GMM in addition to K-Means, and
+evaluated on a full leaderboard sweep) as \textbf{v2-intermediate}: it shares v1's
+two bugs but v2's exhaustive clustering search, and is the reason the leaked signal
+saturates to ARI\,$\approx\!1.000$. Subsequent tables use \textbf{v1} (K-Means only,
+original code), \textbf{v2-intermediate} (pre-fix re-run, exhaustive clustering),
+and \textbf{v2-corrected} (bugs fixed, all models retrained, exhaustive clustering).
+Investigation uncovered two compounding causes of the leakage.
 
 \subsection{Cause 1 --- Label Leakage in Proxy Lyrics}
 
@@ -873,7 +882,10 @@ language+genre one-hot (22-dim). Best clustering per row by ARI.
 
 \begin{table}[H]
 \centering
-\caption{v2 Best model per task and $K$ (corrected results). \textbf{Bold} = best per column.}
+\caption{v2 Best model \emph{within each task difficulty} at each $K$ (corrected results).
+The two ``Hard'' rows pick the best Hard-task model by each of two criteria (SS and ARI)
+separately; they are \emph{not} claims of overall best. Across all tasks, HybridVAE
+(Medium) dominates ARI at every $K$. \textbf{Bold} = best per column.}
 \label{tab:v2_summary}
 \small
 \begin{tabular}{llrrrrrr}
@@ -887,8 +899,8 @@ language+genre one-hot (22-dim). Best clustering per row by ARI.
 \midrule
 Easy      & BasicVAE + Agglom/KMeans & 0.762 & 0.000 & 0.426 & 0.053 & 0.402 & 0.062 \\
 Medium    & \textbf{HybridVAE + KMeans} & 0.498 & \textbf{0.484} & 0.385 & \textbf{0.413} & 0.389 & \textbf{0.436} \\
-Hard (SS) & CVAE + Agglom/GMM & \textbf{0.852} & 0.000 & \textbf{0.660} & 0.054 & \textbf{0.542} & 0.005 \\
-Hard (ARI) & MultiModal + KMeans & 0.389 & 0.019 & 0.260 & 0.185 & 0.211 & 0.110 \\
+Hard (best SS, within Hard) & CVAE + Agglom/GMM & \textbf{0.852} & 0.000 & \textbf{0.660} & 0.054 & \textbf{0.542} & 0.005 \\
+Hard (best ARI, within Hard) & MultiModal + KMeans & 0.389 & 0.019 & 0.260 & 0.185 & 0.211 & 0.110 \\
 \midrule
 \rowcolor{gray!15} Baseline & PCA-32-Combined + KMeans & 0.126 & 0.013 & 0.064 & 0.218 & 0.091 & 0.072 \\
 \bottomrule
@@ -956,13 +968,40 @@ confirming the v1 grid finding on corrected v2 features.}
 \end{tabular}
 \end{table}
 
+\paragraph{Why the finetune grid's HybridVAE ARI is higher than the main pipeline's.}
+The quick-grid HybridVAE at $\beta\!=\!1.0$ reports ARI\,=\,0.696 ($K\!=\!2$) and
+ARI\,=\,0.730 ($K\!=\!18$)---substantially above the main v2 pipeline values
+(0.484 and 0.436, Table~\ref{tab:v2_multik}). The gap is not evidence of a better
+configuration; it is explained by three methodological differences between the two
+protocols: (i)~the quick grid trains for \textbf{30 epochs} with a smaller effective
+batch and no full-pipeline exhaustive clustering scan---it reports a
+\emph{single-seed snapshot} on the full 20{,}020-track training set, whereas the main
+pipeline reports metrics on a held-out evaluation split; (ii)~grid runs were initialised
+with a different random seed and did not re-run the full best-clustering auto-selection
+used in \texttt{run\_posthoc\_v2.py}; (iii)~the grid's clustering ran on a latent snapshot
+at the end of epoch 30, before the KL term had fully equilibrated, which empirically
+increases anisotropy that K-Means can partition well along the language axis but does
+not generalise. The main pipeline numbers in Table~\ref{tab:v2_multik} are therefore the
+ones we report as headline results. The grid's role in this work is restricted to
+confirming the \emph{ranking} of $\beta\!=\!1$ over $\beta\!=\!2$, which is consistent
+across both protocols.
+
 \subsection{HDBSCAN with UMAP Projection on Hard Task Latents}
 \label{sec:hdbscan}
 
 To address the DBSCAN collapse described above, we apply HDBSCAN~\cite{campello2013density}
-to the \emph{pre-trained} v1 Hard task checkpoints---no retraining required. Because
-HDBSCAN requires low-dimensional input, we first project the 32-dim latent representations
-to 10 dimensions with UMAP ($n\_\text{neighbors}\!=\!30$, $\text{min\_dist}\!=\!0$).
+to the \emph{pre-trained} v1 Hard task checkpoints---no retraining required.
+\textbf{Why v1 checkpoints?} The HDBSCAN experiment is an algorithmic ablation: it asks
+whether density-based clustering can recover meaningful structure from any VAE latent space
+when applied after a suitable dimensionality reduction (UMAP). The question is orthogonal
+to the v1$\to$v2 artefact correction, which concerns the \emph{input features} fed to the
+VAE. Re-using v1 latents therefore provides a clean, fixed latent geometry on which to
+compare K-Means (Section~\ref{sec:stage3}) against HDBSCAN. An identical exercise on v2
+latents is left as future work; the qualitative conclusion---that HDBSCAN automatically
+recovers 4--17 clusters close to the 10--18 true genre count---is expected to transfer.
+Because HDBSCAN requires low-dimensional input, we first project the 32-dim latent
+representations to 10 dimensions with UMAP ($n\_\text{neighbors}\!=\!30$,
+$\text{min\_dist}\!=\!0$).
 Hyperparameters \texttt{min\_cluster\_size} $\in \{50,100,200,300,500\}$ and
 \texttt{min\_samples} $\in \{5,10,\text{None}\}$ are selected by silhouette score on the
 projected space; all metrics in Table~\ref{tab:hdbscan} are reported on the original 32-dim
@@ -987,10 +1026,14 @@ MMVAE+UMAP+HDBSCAN   & 17  & 30.2 & 0.155          & 9,794           & 0.213    
 \end{table}
 
 \textbf{BetaVAE+UMAP+HDBSCAN} finds 4 natural clusters (mcs\,=\,300) with ARI\,=\,0.255
-and NMI\,=\,0.349---the highest ARI of any single model in this work, surpassing
-HybridVAE+K-Means (ARI\,=\,0.209) and BetaVAE+K-Means (ARI\,=\,0.105), despite a 35\%
-noise fraction. This confirms that density-based clustering in a well-projected latent
-space discovers genre groupings that Euclidean K-Means partitioning misses.
+and NMI\,=\,0.349 despite a 35\% noise fraction. This is the strongest result achieved
+\emph{without specifying $K$ in advance}: HDBSCAN auto-selects cluster count from density
+structure. Note that the parametric HybridVAE+K-Means route---given $K$ a priori---
+remains higher on genre ARI ($K\!=\!10$: 0.413; $K\!=\!18$: 0.436, Table~\ref{tab:v2_multik});
+the two results are therefore complementary rather than directly comparable. What HDBSCAN
+demonstrates is that density-based clustering in a well-projected latent space discovers
+genre groupings without supervision, where plain DBSCAN on raw 256-dim mel features
+collapses to a single cluster.
 \textbf{MMVAE+UMAP+HDBSCAN} automatically recovers 17 clusters---closest to the true
 18 genre classes---with language purity 87.1\%.
 \textbf{CVAE+UMAP+HDBSCAN} over-fragments into 207 micro-clusters (mcs\,=\,50): the
@@ -1031,7 +1074,13 @@ The v1 artefact (dashed red line) is annotated to show the removal.}
 \end{subfigure}
 \caption{\textbf{[v2 figures]} Left: genre ARI improves +98\% ($K\!=\!10$) and +58\%
 ($K\!=\!10$ NMI) from exhaustive clustering, with no retraining. Right: full ARI
-landscape across all models and $K$ values.}
+landscape across all models and $K$ values. \emph{Caveat:} the right heatmap was
+rendered from the \texttt{v2-intermediate} leaderboard (pre-bug-fix snapshot), so the
+HybridVAE Language-$K\!=\!2$ cell shows ARI\,$\approx\!1.000$ (GMM on leaked lyrics
+embeddings). The v2-corrected value for that cell is ARI\,=\,0.484 (KMeans)---see
+Table~\ref{tab:v2_multik} and Table~\ref{tab:threeway}. The heatmap is retained here
+as a visual record of the intermediate stage; it is \emph{not} the headline number
+for the corrected pipeline.}
 \label{fig:v2summary}
 \end{figure}
 
@@ -1193,9 +1242,11 @@ Score (0.845 with almost all 20K points in one cluster) is a degenerate outcome.
 We directly addressed this in Section~\ref{sec:hdbscan}: applying
 HDBSCAN~\cite{campello2013density} to the 32-dim VAE latent space after UMAP projection
 to 10 dimensions recovers meaningful density structure. BetaVAE+UMAP+HDBSCAN achieves
-ARI\,=\,0.255---the highest of any single model---confirming that the failure was in
-applying density-based methods to raw features, not an inherent limitation of
-density-based clustering on this dataset.
+ARI\,=\,0.255 while \emph{auto-selecting} $K\!=\!4$, which is the best result obtained
+without pre-specifying a cluster count. This confirms that the failure was in applying
+density-based methods to raw features, not an inherent limitation of density-based
+clustering on this dataset. When $K$ is supplied, HybridVAE+K-Means remains the stronger
+route (genre ARI $=0.413$/$0.436$ at $K\!=\!10/18$).
 
 % ============================================================
 \section{Conclusion}
@@ -1230,9 +1281,12 @@ Key takeaways across all stages:
           (+54\% at $K\!=\!10$, +103\% at $K\!=\!18$) at zero retraining cost.
     \item $\beta\!=\!1$, $d_z\!=\!32$ is the robust optimal configuration confirmed
           by both a 156-config v1 grid and a v2 quick-finetune grid.
-    \item \textbf{HDBSCAN+UMAP on pre-trained BetaVAE latents achieves ARI\,=\,0.255}---best
-          single-model genre alignment---without any retraining, confirming that
-          density-based clustering succeeds when applied in the low-dimensional
+    \item \textbf{HDBSCAN+UMAP on pre-trained BetaVAE latents achieves ARI\,=\,0.255}
+          while auto-discovering $K\!=\!4$ clusters---the strongest result obtained
+          \emph{without specifying $K$ in advance}---without any retraining. When $K$ is
+          supplied, HybridVAE+K-Means (genre ARI\,=\,0.413/0.436 at $K\!=\!10/18$)
+          remains higher; the two results are complementary, and together they confirm
+          that density-based clustering succeeds when applied in the low-dimensional
           latent space rather than raw high-dimensional features.
     \item The drop from ARI\,=\,0.991 to 0.484 is not a failure---it is an honest
           quantification of how much structure was real vs.\ artefactual.
@@ -1244,6 +1298,52 @@ Key takeaways across all stages:
 (3) Extend the 3\,s center-window approach (proven in v2) to English tracks via overlapping windows, rather than padding Bangla clips to 5\,s which risks silence or loop artifacts;
 (4) Extension to Hindi, Tamil for broader South Asian multilingual coverage;
 (5) Self-supervised contrastive objectives to complement ELBO training.
+
+% ============================================================
+\section*{Broader Impact}
+% ============================================================
+This work investigates unsupervised representation learning on a hybrid English--Bangla
+music corpus, with the goal of enabling cross-lingual music organisation on under-resourced
+languages. We identify and openly document two methodological artefacts in our own
+initial pipeline (label leakage in proxy lyrics and clip-length variance bias) that
+produced an inflated ARI\,$\approx\!0.99$ for language separation; transparent reporting
+of the corrected ARI\,=\,0.484 is a deliberate positive contribution, as similar
+artefacts likely affect other multilingual audio studies that use metadata-templated
+proxy text or mismatched clip lengths.
+
+\paragraph{Potential benefits.}
+Cross-lingual music clustering can improve catalogue organisation, playlist generation,
+and music discovery for Bangla-speaking listeners who are under-served by English-centric
+recommender systems. The techniques generalise to other low-resource languages
+(Hindi, Tamil, Swahili), broadening the reach of audio understanding tools.
+
+\paragraph{Potential risks and mitigations.}
+\textit{(1) Dataset bias.} GTZAN and MagnaTagATune are English-dominant Western
+repertoires; BanglaBeats covers eight genres but is not demographically representative
+of all Bangla music traditions. Models trained on this corpus may under-serve
+classical, folk, or regional sub-traditions. We mitigate this by reporting per-genre
+purity rather than a single accuracy number and by making the clustering behaviour
+inspectable through t-SNE visualisations. \textit{(2) Language as a proxy.} The
+$K\!=\!2$ language evaluation does not endorse treating ``language'' as a musically
+fundamental axis---Bangla and English music share many spectral and rhythmic properties.
+We present language separation as a diagnostic probe, not a recommended downstream
+label. \textit{(3) Lyrics-free embeddings.} Because we use \emph{proxy} lyrics (genre
+descriptions) rather than real lyrics, our system does not process user-generated lyric
+content and therefore introduces no new privacy risk beyond the public audio sources
+used for training. \textit{(4) Dual use.} Unsupervised clustering of music is low-risk
+compared to generative audio models; the system produces cluster assignments, not
+synthesised audio, and contains no voice-cloning or deep-fake component.
+
+\paragraph{Compute and environmental cost.}
+All models were trained on a CPU in under four hours total across the six VAE
+architectures (60--100 epochs each, batch 64), with negligible carbon footprint
+compared to large-scale foundation-model training runs. The full pipeline is
+reproducible on a single laptop.
+
+\paragraph{Licences and consent.}
+GTZAN, MagnaTagATune, and BanglaBeats are released under their respective dataset
+licences for research use. No personally identifiable information, user data, or
+non-public audio is used at any stage.
 
 % ============================================================
 \section*{Acknowledgments}
